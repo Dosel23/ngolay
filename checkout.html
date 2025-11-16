@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Ngolay</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+body{background:#f8f9fa;color:#333;}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#656283;color:white;flex-wrap:wrap;}
+header .logo img{width:80px;height:80px;border-radius:50%;}
+header nav a{color:white;text-decoration:none;margin:0 10px;font-weight:bold;transition:0.3s;}
+header nav a:hover{color:#ddd;}
+
+.checkout-container{max-width:1200px;margin:auto;padding:20px;}
+.checkout-container h1{margin-bottom:20px;text-align:center;color:#656283;}
+
+.checkout-content{display:flex;gap:30px;flex-wrap:wrap;}
+.order-items{flex:2;background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+.order-summary{flex:1;background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);height:fit-content;}
+
+.order-item{display:flex;gap:15px;padding:15px;border-bottom:1px solid #eee;align-items:center;}
+.order-item:last-child{border-bottom:none;}
+.order-item img{width:80px;height:80px;object-fit:cover;border-radius:5px;}
+.item-details{flex:1;}
+.item-details h3{margin:0 0 5px 0;color:#656283;}
+.item-details p{margin:3px 0;font-size:0.9em;}
+.item-price{font-weight:bold;color:#656283;font-size:1.1em;}
+
+.summary-item{display:flex;justify-content:space-between;margin:10px 0;padding:8px 0;}
+.summary-total{display:flex;justify-content:space-between;font-weight:bold;font-size:1.2em;margin:15px 0;padding-top:15px;border-top:2px solid #656283;}
+
+.payment-method{margin:20px 0;padding:15px;background:#f8f9fa;border-radius:5px;}
+.payment-method h3{margin-top:0;color:#656283;}
+
+.confirm-btn{background:#656283;color:white;border:none;padding:12px 25px;border-radius:5px;font-size:1.1em;font-weight:bold;cursor:pointer;width:100%;transition:0.3s;margin-top:15px;}
+.confirm-btn:hover{background:#8C89A6;}
+
+.back-btn{background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:5px;font-weight:bold;cursor:pointer;transition:0.3s;margin-top:10px;margin-right:10px;}
+.back-btn:hover{background:#5a6268;}
+
+.empty-checkout{text-align:center;padding:40px;color:#666;font-style:italic;}
+
+/* Success popup */
+.popup{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;}
+.popup-content{background:white;padding:30px;border-radius:10px;text-align:center;max-width:400px;width:90%;word-wrap:break-word;}
+.popup-content h3{color:#656283;margin-bottom:15px;}
+.popup-btn{background:#656283;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:bold;margin:10px 5px;transition:0.3s;}
+.popup-btn:hover{background:#8C89A6;}
+.popup-btn.secondary{background:#6c757d;}
+.popup-btn.secondary:hover{background:#5a6268;}
+
+/* Responsive adjustments */
+@media(max-width:1024px){
+  .checkout-content{flex-direction:column;}
+  .order-item{flex-direction:row;flex-wrap:wrap;text-align:left;}
+  .order-item img{width:70px;height:70px;}
+}
+
+@media(max-width:768px){
+  .checkout-content{flex-direction:column;}
+  .order-item{flex-direction:column;text-align:center;}
+  .order-item img{width:100px;height:100px;margin-bottom:10px;}
+  .order-summary{margin-top:20px;}
+}
+
+@media(max-width:480px){
+  header{flex-direction:column;align-items:flex-start;}
+  header nav{margin-top:10px;}
+  .checkout-container{padding:10px;}
+  .order-item img{width:80px;height:80px;}
+  .item-details h3{font-size:1em;}
+  .item-details p{font-size:0.85em;}
+  .item-price{font-size:1em;}
+  .confirm-btn{padding:10px 20px;font-size:1em;}
+  .back-btn{padding:8px 15px;font-size:0.9em;}
+  .popup-content{padding:20px;}
+  .popup-btn{padding:8px 15px;font-size:0.9em;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="cart.html">Cart</a>
+    <a href="wishlist.html">Wishlist</a>
+  </nav>
+</header>
+
+<section class="checkout-container">
+  <h1>Checkout</h1>
+  
+  <div class="checkout-content">
+    <div class="order-items" id="order-items">
+      <!-- Order items dynamically inserted -->
+    </div>
+    
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <div class="summary-item">
+        <span>Subtotal:</span>
+        <span id="subtotal">Nu. 0.00</span>
+      </div>
+      <div class="summary-item">
+        <span>Shipping:</span>
+        <span>Nu. 0.00</span>
+      </div>
+      <div class="summary-item">
+        <span>Tax:</span>
+        <span>Nu. 0.00</span>
+      </div>
+      <div class="summary-total">
+        <span>Total:</span>
+        <span id="total">Nu. 0.00</span>
+      </div>
+      
+      <div class="payment-method">
+        <h3>Payment Method</h3>
+        <p><strong>Cash on Exchange</strong></p>
+        <p style="font-size:0.9em;color:#666;margin-top:10px;">
+          The seller will contact you to arrange a meeting location and time for exchange.
+        </p>
+      </div>
+      
+      <button class="confirm-btn" id="confirm-order">Place Order</button>
+      <button class="back-btn" onclick="window.location.href='cart.html'">Back to Cart</button>
+    </div>
+  </div>
+</section>
+
+<div class="popup" id="success-popup">
+  <div class="popup-content">
+    <h3>🎉 Order Placed Successfully!</h3>
+    <p id="order-success-message">Your order has been confirmed. The seller will contact you soon.</p>
+    <button class="popup-btn" onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
+    <button class="popup-btn secondary" onclick="window.location.href='index.html'">Continue Shopping</button>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:20px;background:#656283;color:white;margin-top:20px;">
+  © 2025 Ngolay. All Rights Reserved
+</footer>
+
+<script type="module">
+// Your existing JS code remains unchanged
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+  authDomain: "ngolay-project.firebaseapp.com",
+  projectId: "ngolay-project",
+  storageBucket: "ngolay-project.appspot.com",
+  messagingSenderId: "236457585222",
+  appId: "1:236457585222:web:9133bb46a97ef678d23847"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const orderItemsContainer = document.getElementById('order-items');
+const subtotalEl = document.getElementById('subtotal');
+const totalEl = document.getElementById('total');
+const confirmOrderBtn = document.getElementById('confirm-order');
+const successPopup = document.getElementById('success-popup');
+const orderSuccessMessage = document.getElementById('order-success-message');
+
+let currentUser = null;
+let checkoutItems = [];
+let orderTotal = 0;
+
+onAuthStateChanged(auth, async user => {
+  if(!user){ 
+    alert("Please log in to continue with checkout");
+    window.location.href='login.html'; 
+    return; 
+  }
+  currentUser = user;
+  loadCheckoutItems();
+});
+
+function loadCheckoutItems() {
+  const storedItems = sessionStorage.getItem('checkoutItems');
+  if(!storedItems){
+    orderItemsContainer.innerHTML = '<div class="empty-checkout">No items found. Please add items to your cart first.</div>';
+    return;
+  }
+  checkoutItems = JSON.parse(storedItems);
+  renderCheckoutItems();
+  calculateTotal();
+}
+
+function renderCheckoutItems(){
+  orderItemsContainer.innerHTML = '';
+  checkoutItems.forEach(item => {
+    const itemElement = document.createElement('div');
+    itemElement.className = 'order-item';
+    itemElement.innerHTML = `
+      <img src="${item.images?.[0] || 'logo.png'}" alt="${item.name}">
+      <div class="item-details">
+        <h3>${item.name}</h3>
+        <p><strong>Price:</strong> Nu. ${item.price}</p>
+        <p><strong>Quantity:</strong> ${item.quantity || 1}</p>
+        <p><strong>Color:</strong> ${item.selectedColor || 'Not specified'}</p>
+        <p><strong>Size:</strong> ${item.selectedSize || 'Not specified'}</p>
+      </div>
+      <div class="item-price">
+        Nu. ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+      </div>
+    `;
+    orderItemsContainer.appendChild(itemElement);
+  });
+}
+
+function calculateTotal(){
+  orderTotal = checkoutItems.reduce((acc, item) => acc + ((item.price || 0) * (item.quantity || 1)), 0);
+  subtotalEl.textContent = `Nu. ${orderTotal.toFixed(2)}`;
+  totalEl.textContent = `Nu. ${orderTotal.toFixed(2)}`;
+}
+
+confirmOrderBtn.addEventListener('click', async () => {
+  if(checkoutItems.length === 0){ alert('No items to order!'); return; }
+  try {
+    const orderId = "ORD-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+    for(const item of checkoutItems){
+      const orderRef = doc(db, "orders", orderId + "_" + item.id);
+      await setDoc(orderRef, { ...item, orderId: orderId, buyerId: currentUser.uid, status:'Pending', paymentMethod:'Cash on Exchange', totalAmount:orderTotal, createdAt:new Date() });
+      if(item.id) await deleteDoc(doc(db,"cart",item.id));
+    }
+    sessionStorage.removeItem('checkoutItems');
+    sessionStorage.removeItem('checkoutType');
+    orderSuccessMessage.textContent = `Order ${orderId} has been placed successfully! The seller will contact you soon.`;
+    successPopup.style.display = 'flex';
+  } catch(e){ console.error(e); alert("Failed to place order. Please try again."); }
+});
+</script>
+
+</body>
+</html>

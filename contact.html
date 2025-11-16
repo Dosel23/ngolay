@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Ngolay</title>
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family:"Poppins",sans-serif;}
+    body {background-color:#f8f9fa; color:#333;}
+
+    /* HEADER */
+    header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background-color:#7a7597;
+      padding:10px 40px;
+      color:white;
+      flex-wrap:wrap;
+    }
+    header img {width:70px; height:70px; border-radius:50%;}
+    nav a {
+      color:white;
+      text-decoration:none;
+      margin:0 15px;
+      font-weight:bold;
+      transition:0.3s;
+    }
+    nav a:hover {color:#ddd;}
+    .search-container input {
+      padding:5px;
+      border-radius:5px;
+      border:none;
+    }
+
+    /* CONTACT SECTION */
+    .contact-section {padding:60px 20px; display:flex; justify-content:center;}
+    .contact-container {
+      background-color:#dcdbe6;
+      padding:40px;
+      border-radius:20px;
+      box-shadow:0 4px 8px rgba(0,0,0,0.1);
+      width:90%; max-width:700px;
+      text-align:center;
+    }
+    .contact-container h2 {margin-bottom:20px; font-size:1.8em;}
+    .contact-container p {margin-bottom:25px; color:#555;}
+    .form-group {
+      display:flex;
+      flex-wrap:wrap;
+      gap:15px;
+      margin-bottom:15px;
+    }
+    .form-group input, textarea {
+      flex:1;
+      padding:12px 15px;
+      border-radius:25px;
+      border:none;
+      background-color:#9a96b5;
+      color:white;
+      font-size:1em;
+    }
+    textarea {
+      width:100%;
+      height:100px;
+      resize:none;
+    }
+    ::placeholder {color:white; opacity:0.9;}
+    button {
+      background-color:#7a7597;
+      color:white;
+      border:none;
+      border-radius:25px;
+      padding:12px 40px;
+      cursor:pointer;
+      font-size:1em;
+      transition:0.3s;
+    }
+    button:hover {background-color:#5d5980;}
+
+    /* FOOTER */
+    footer {
+      background-color:#7a7597;
+      color:white;
+      padding:40px;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+      text-align:left;
+    }
+    .footer-logo img {width:70px; height:70px; border-radius:50%;}
+    .footer-links {
+      flex:1;
+      display:flex;
+      justify-content:center;
+      gap:60px;
+      margin:20px 0;
+      flex-wrap:wrap;
+    }
+    .footer-section h3 {margin-bottom:10px; font-size:1.1em;}
+    .footer-section a {
+      display:block;
+      color:white;
+      text-decoration:none;
+      margin:5px 0;
+    }
+    .footer-bottom {
+      width:100%;
+      text-align:center;
+      border-top:1px solid #333;
+      margin-top:20px;
+      padding-top:10px;
+      color:#ccc;
+    }
+
+    /* ========= RESPONSIVE FIXES ========= */
+
+    /* Header responsive */
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+      nav {
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:10px;
+      }
+      .search-container {
+        width:100%;
+        display:flex;
+        justify-content:center;
+      }
+      .search-container input {
+        width:90%;
+      }
+    }
+
+    /* Footer responsive */
+    @media (max-width: 600px) {
+      footer {
+        text-align:center;
+      }
+      .footer-links {
+        flex-direction:column;
+        gap:30px;
+      }
+    }
+
+    /* Form responsive */
+    @media (max-width: 768px) {
+      .form-group {flex-direction:column;}
+      .footer-links {flex-direction:column; align-items:center;}
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="categories.html">Categories</a>
+      <a href="cart.html">Cart</a>
+      <a href="wishlist.html">Wishlist</a>
+    </nav>
+    <div class="search-container">
+      <input type="text" placeholder="Search...">
+    </div>
+  </header>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="contact-container">
+      <h2>Contact Us</h2>
+      <p>Do you have a question, complaint, or need help? Feel free to contact us.</p>
+
+      <form id="contact-form">
+        <div class="form-group">
+          <input type="text" name="first_name" placeholder="Enter your first name" required>
+          <input type="text" name="last_name" placeholder="Enter your last name" required>
+        </div>
+
+        <div class="form-group">
+          <input type="email" name="email" placeholder="Enter your email" required>
+          <input type="text" name="contact" placeholder="Enter your contact number">
+        </div>
+
+        <div class="form-group">
+          <textarea name="message" placeholder="Enter your message" required></textarea>
+        </div>
+
+        <button type="submit">Send a Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <div class="footer-links">
+      <div class="footer-section">
+        <h3>Company</h3>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Our Information</h3>
+        <a href="terms.html">Terms and Conditions</a>
+        <a href="FAQ.html">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> Ngolay. All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Firebase & Form Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+      authDomain: "ngolay-project.firebaseapp.com",
+      projectId: "ngolay-project",
+      storageBucket: "ngolay-project.firebasestorage.app",
+      messagingSenderId: "236457585222",
+      appId: "1:236457585222:web:9133bb46a97ef678d23847",
+      measurementId: "G-34BC1Z5PPM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const contactForm = document.getElementById('contact-form');
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        firstName: contactForm.first_name.value,
+        lastName: contactForm.last_name.value,
+        email: contactForm.email.value,
+        contact: contactForm.contact.value || '',
+        message: contactForm.message.value,
+        timestamp: serverTimestamp()
+      };
+
+      try {
+        await addDoc(collection(db, "contact_messages"), formData);
+        alert("Your message has been sent successfully!");
+        contactForm.reset();
+      } catch (error) {
+        console.error("Error sending message:", error);
+        alert("Sorry, something went wrong. Please try again later.");
+      }
+    });
+  </script>
+
+</body>
+</html>
