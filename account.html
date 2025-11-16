@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account - Ngolay</title>
+<link rel="stylesheet" href="all_categories.css">
+<style>
+/* ---------- Your existing styles ---------- */
+/* Keep all your existing CSS from previous account.html here */
+.account-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+}
+
+/* Sidebar Navigation - Left Side */
+.account-sidebar {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sidebar-item {
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+    font-weight: 500;
+    display: block;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.sidebar-item:first-child {
+    font-weight: bold;
+    color: #656283;
+    background: #f8f9fa;
+}
+
+.sidebar-item:hover {
+    background: #f0f0f0;
+}
+
+/* Main Content Area */
+.account-main {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Personal Information Section */
+.personal-info h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.info-label {
+    width: 120px;
+    font-weight: 500;
+    color: #333;
+}
+
+.info-value {
+    flex: 1;
+    color: #666;
+}
+
+/* Quick Actions Grid */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.action-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.action-card:hover {
+    background: #656283;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.action-card h3 {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Update Account Section */
+.update-section {
+    margin: 30px 0;
+}
+
+.update-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.update-btn {
+    background: #656283;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.update-btn:hover {
+    background: #555172;
+}
+
+/* Account Management - Delete/Deactivate */
+.account-management {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.account-management h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.danger-zone {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.danger-zone h3 {
+    color: #e53e3e;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.danger-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.btn-danger:hover {
+    background: #c53030;
+}
+
+.btn-secondary {
+    background: #718096;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.btn-secondary:hover {
+    background: #4a5568;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.modal h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    min-width: 100px;
+}
+
+.modal-btn-primary {
+    background: #656283;
+    color: white;
+}
+
+.modal-btn-primary:hover {
+    background: #555172;
+}
+
+.modal-btn-secondary {
+    background: #718096;
+    color: white;
+}
+
+.modal-btn-secondary:hover {
+    background: #4a5568;
+}
+
+/* Re-authentication form inside modal */
+.reauth-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reauth-container input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .account-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .danger-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        width: 85%;
+        padding: 20px;
+    }
+}
+
+/* Header Search Styles */
+#search-bar {
+    display: none;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-width: 150px;
+    z-index: 10;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-menu a:hover {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="cart.html">Cart</a>
+    <a href="wishlist.html">Wishlist</a>
+  </nav>
+  <div class="header-icons">
+    <div class="search-container">
+      <i class="search-icon" id="search-icon">🔍</i>
+      <input type="text" id="search-bar" placeholder="Search product...">
+    </div>
+    <div class="account-dropdown">
+      <i class="account-icon" id="account-icon">👤</i>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <a href="account.html">Account</a>
+        <a href="login.html">Log In</a>
+        <a href="logout.html">Log Out</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Account Content -->
+<main class="account-container">
+  <!-- Left Sidebar -->
+  <aside class="account-sidebar">
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-item">MY ACCOUNT</a>
+      <a href="#" class="sidebar-item">Personal Information</a>
+      <a href="listing.html" class="sidebar-item">POST ITEM</a>
+      <a href="cart.html" class="sidebar-item">MY CART</a>
+      <a href="wishlist.html" class="sidebar-item">WISHLIST</a>
+      <a href="update_account.html" class="sidebar-item">UPDATE ACCOUNT</a>
+      <a href="dashboard.html" class="sidebar-item">DASHBOARD</a>
+    </nav>
+  </aside>
+
+  <!-- Right Main Content -->
+  <div class="account-main">
+    <!-- Personal Information -->
+    <section class="personal-info">
+      <h2>Personal Information</h2>
+      <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value" id="user-name">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">ID:</span>
+        <span class="info-value" id="user-id">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Email:</span>
+        <span class="info-value" id="user-email">Loading...</span>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+      <a href="listing.html" class="action-card"><h3>POST ITEM</h3></a>
+      <a href="cart.html" class="action-card"><h3>MY CART</h3></a>
+      <a href="wishlist.html" class="action-card"><h3>WISHLIST</h3></a>
+      <a href="dashboard.html" class="action-card"><h3>DASHBOARD</h3></a>
+    </section>
+
+    <!-- Update Section -->
+    <section class="update-section">
+      <h2>UPDATE ACCOUNT</h2>
+      <button class="update-btn" id="update-account-btn">UPDATE ACCOUNT</button>
+    </section>
+
+    <!-- Delete / Deactivate -->
+    <section class="account-management">
+      <h2>Delete or Deactivate Account</h2>
+      <div class="danger-zone">
+        <h3>Delete or Deactivate Account</h3>
+        <div class="danger-buttons">
+          <button class="btn-danger" id="delete-btn">DELETE</button>
+          <button class="btn-secondary" id="deactivate-btn">DEACTIVATE</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Delete Modal -->
+<div id="delete-modal" class="modal">
+  <div class="modal-content">
+    <h2>DELETE ACCOUNT</h2>
+    <p>Account will be deleted permanently! Please re-enter your password to confirm.</p>
+    <div class="reauth-container">
+      <input type="password" id="reauth-password-delete" placeholder="Enter Password">
+      <button class="modal-btn modal-btn-primary" id="confirm-delete">Confirm Delete</button>
+      <button class="modal-btn modal-btn-secondary" id="cancel-delete">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Deactivate Modal -->
+<div id="deactivate-modal" class="modal">
+  <div class="modal-content">
+    <h2>DEACTIVATE ACCOUNT</h2>
+    <p>Account will be deactivated and can be recovered within 30 days. Please re-enter your password to confirm.</p>
+    <div class="reauth-container">
+      <input type="password" id="reauth-password-deactivate" placeholder="Enter Password">
+      <button class="modal-btn modal-btn-primary" id="confirm-deactivate">Confirm Deactivate</button>
+      <button class="modal-btn modal-btn-secondary" id="cancel-deactivate">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <div class="footer-links">
+    <div class="footer-section">
+      <h3>Company</h3>
+      <a href="about.html">About Us</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-section">
+      <h3>Our Information</h3>
+      <a href="#">Terms</a>
+      <a href="#">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Ngolay. All Rights Reserved</div>
+</footer>
+
+<!-- ---------------- Firebase Script ---------------- -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, deleteUser, reauthenticateWithCredential, EmailAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// Firebase Config
+const firebaseConfig = {
+    apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+    authDomain: "ngolay-project.firebaseapp.com",
+    projectId: "ngolay-project",
+    storageBucket: "ngolay-project.appspot.com",
+    messagingSenderId: "236457585222",
+    appId: "1:236457585222:web:9133bb46a97ef678d23847",
+    measurementId: "G-34BC1Z5PPM"
+};
+
+// Initialize
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth();
+
+// DOM Elements
+const userNameElement = document.getElementById('user-name');
+const userIdElement = document.getElementById('user-id');
+const userEmailElement = document.getElementById('user-email');
+const updateAccountBtn = document.getElementById('update-account-btn'); // Added this line
+
+const deleteModal = document.getElementById('delete-modal');
+const deactivateModal = document.getElementById('deactivate-modal');
+const deleteBtn = document.getElementById('delete-btn');
+const deactivateBtn = document.getElementById('deactivate-btn');
+const confirmDeleteBtn = document.getElementById('confirm-delete');
+const cancelDeleteBtn = document.getElementById('cancel-delete');
+const confirmDeactivateBtn = document.getElementById('confirm-deactivate');
+const cancelDeactivateBtn = document.getElementById('cancel-deactivate');
+
+const reauthPasswordDelete = document.getElementById('reauth-password-delete');
+const reauthPasswordDeactivate = document.getElementById('reauth-password-deactivate');
+
+// ---------------- Load User Data ----------------
+onAuthStateChanged(auth, async (user) => {
+    if(user){
+        try{
+            const userDoc = await getDoc(doc(db,'users',user.uid));
+            if(userDoc.exists()){
+                const data = userDoc.data();
+                userNameElement.textContent = data.name || user.displayName || 'Not set';
+                userIdElement.textContent = user.uid;
+                userEmailElement.textContent = user.email || 'Not set';
+            } else {
+                userNameElement.textContent = user.displayName || 'Not set';
+                userIdElement.textContent = user.uid;
+                userEmailElement.textContent = user.email || 'Not set';
+            }
+        } catch(err){
+            console.error(err);
+            userNameElement.textContent = 'Error loading';
+            userIdElement.textContent = 'Error loading';
+            userEmailElement.textContent = 'Error loading';
+        }
+    } else {
+        window.location.href='login.html';
+    }
+});
+
+// ---------------- UPDATE ACCOUNT BUTTON - Redirect to update_account.html ----------------
+updateAccountBtn.addEventListener('click', () => {
+    window.location.href = 'update_account.html';
+});
+
+// ---------------- Modal Open/Close ----------------
+deleteBtn.addEventListener('click',()=> deleteModal.style.display='flex');
+deactivateBtn.addEventListener('click',()=> deactivateModal.style.display='flex');
+cancelDeleteBtn.addEventListener('click',()=> deleteModal.style.display='none');
+cancelDeactivateBtn.addEventListener('click',()=> deactivateModal.style.display='none');
+window.addEventListener('click',(e)=>{
+    if(e.target===deleteModal) deleteModal.style.display='none';
+    if(e.target===deactivateModal) deactivateModal.style.display='none';
+});
+
+// ---------------- Secure Delete ----------------
+confirmDeleteBtn.addEventListener('click', async()=>{
+    const user = auth.currentUser;
+    const password = reauthPasswordDelete.value;
+    if(!password) return alert('Please enter your password to confirm.');
+    const credential = EmailAuthProvider.credential(user.email, password);
+    try{
+        await reauthenticateWithCredential(user, credential);
+        // Delete user Firestore document first
+        await deleteDoc(doc(db,'users',user.uid));
+        // Delete user Auth account
+        await deleteUser(user);
+        alert('Account deleted successfully.');
+        window.location.href='signup.html';
+    } catch(err){
+        console.error('Failed to delete account:', err);
+        alert('Failed to delete account: '+err.message);
+    }
+});
+
+// ---------------- Secure Deactivate ----------------
+confirmDeactivateBtn.addEventListener('click', async()=>{
+    const user = auth.currentUser;
+    const password = reauthPasswordDeactivate.value;
+    if(!password) return alert('Please enter your password to confirm.');
+    const credential = EmailAuthProvider.credential(user.email, password);
+    try{
+        await reauthenticateWithCredential(user, credential);
+        // Mark user as deactivated in Firestore
+        await updateDoc(doc(db,'users',user.uid), {deactivated: true, deactivatedAt: new Date()});
+        // Optionally sign out user
+        await signOut(auth);
+        alert('Account deactivated successfully. You can reactivate by logging in.');
+        window.location.href='login.html';
+    } catch(err){
+        console.error('Failed to deactivate account:', err);
+        alert('Failed to deactivate account: '+err.message);
+    }
+});
+
+// ---------------- Header Dropdown ----------------
+const accountIcon = document.getElementById('account-icon');
+const dropdownMenu = document.getElementById('dropdown-menu');
+accountIcon.addEventListener('click', ()=> {
+    dropdownMenu.style.display = dropdownMenu.style.display==='block'?'none':'block';
+});
+</script>
+</body>
+</html>
