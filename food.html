@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ngolay | Food</title>
+<link rel="stylesheet" href="all_categories.css"> <!-- Product styling is now in shared CSS -->
+</head>
+<body>
+
+<!-- Header Section -->
+<header class="header">
+  <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="categories.html" class="active">Categories</a>
+    <a href="cart.html">Cart</a>
+    <a href="wishlist.html">Wishlist</a>
+  </nav>
+  <div class="header-icons">
+    <i class="search-icon">🔍</i>
+    <i class="account-icon">👤</i>
+  </div>
+</header>
+
+<!-- Products Section -->
+<section class="clothes">
+  <h2>FOOD</h2>
+  <div class="product-grid" id="product-grid"><!-- Products dynamically loaded --></div>
+</section>
+
+<!-- Footer Section -->
+<footer class="footer">
+  <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <div class="footer-links">
+    <div class="footer-section">
+      <h3>Company</h3>
+      <a href="#about">About Us</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-section">
+      <h3>Our Information</h3>
+      <a href="#terms">Terms and Condition</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 Ngolay. All Rights Reserved</p></div>
+</footer>
+
+<!-- Firebase SDK + Firestore -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+  authDomain: "ngolay-project.firebaseapp.com",
+  projectId: "ngolay-project",
+  storageBucket: "ngolay-project.appspot.com",
+  messagingSenderId: "236457585222",
+  appId: "1:236457585222:web:9133bb46a97ef678d23847",
+  measurementId: "G-34BC1Z5PPM"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const grid = document.getElementById("product-grid");
+
+let currentUserUid = null;
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUserUid = user.uid;
+  }
+});
+
+// Load Beauty products
+async function loadProducts() {
+  grid.innerHTML = '<p>Loading products...</p>';
+
+  const productsCol = collection(db, "products");
+  const snapshot = await getDocs(productsCol);
+  grid.innerHTML = '';
+
+  snapshot.forEach(docSnap => {
+    const product = docSnap.data();
+
+    // Only show Beauty category
+    if (product.category === "Food") {
+      const card = document.createElement("div");
+      card.className = "product-card";
+
+      // Use Base64 if available, else URL, else placeholder
+      const imageSrc = product.imageBase64
+        ? `data:image/jpeg;base64,${product.imageBase64}`
+        : (product.images && product.images[0]) || "placeholder.jpg";
+
+      card.innerHTML = `
+        <img src="${imageSrc}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>Nu. ${product.price.toFixed(2)}</p>
+        <div class="product-actions">
+          <button class="cart-btn">🛒</button>
+          <button class="wishlist-btn">❤️</button>
+        </div>
+      `;
+
+      // Product detail navigation
+      card.addEventListener("click", e => {
+        if(e.target.closest(".product-actions")) return;
+        window.location.href = `product_detail.html?id=${docSnap.id}`;
+      });
+
+      // Add to Cart
+      card.querySelector(".cart-btn").addEventListener("click", async e => {
+        e.preventDefault(); e.stopPropagation();
+        if (!currentUserUid) {
+          alert('Please log in to add to cart!');
+          return;
+        }
+        await addDoc(collection(db, "cart"), { 
+          ...product, 
+          id: docSnap.id,
+          quantity: 1,
+          userId: currentUserUid,
+          addedAt: new Date()
+        });
+        alert(`${product.name} added to cart!`);
+      });
+
+      // Add to Wishlist
+      card.querySelector(".wishlist-btn").addEventListener("click", async e => {
+        e.preventDefault(); e.stopPropagation();
+        if (!currentUserUid) {
+          alert('Please log in to add to wishlist!');
+          return;
+        }
+        await addDoc(collection(db, "wishlist"), {
+          ...product,
+          id: docSnap.id,
+          userId: currentUserUid,
+          addedAt: new Date()
+        });
+        alert(`${product.name} added to wishlist!`);
+      });
+
+      grid.appendChild(card);
+    }
+  });
+}
+
+loadProducts();
+</script>
+</body>
+</html>
