@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Out | Ngolay</title>
+  <style>
+    body { 
+      font-family: "Poppins", sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      background-color: #f8f9fa; 
+      color: #333; 
+    }
+    .message-box {
+      background: white; 
+      padding: 30px 40px; 
+      border-radius: 10px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="message-box">
+  <h2>Logging you out...</h2>
+  <p>Please wait a moment.</p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+    authDomain: "ngolay-project.firebaseapp.com",
+    projectId: "ngolay-project",
+    storageBucket: "ngolay-project.appspot.com",
+    messagingSenderId: "236457585222",
+    appId: "1:236457585222:web:9133bb46a97ef678d23847"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+
+  // Only try to log out if a user is logged in
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      }).catch((error) => {
+        alert("Error logging out: " + error.message);
+        window.location.href = "login.html";
+      });
+    } else {
+      // If already logged out, redirect to login
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+</body>
+</html>
