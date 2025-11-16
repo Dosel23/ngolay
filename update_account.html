@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update Account | Ngolay</title>
+
+<style>
+/* ==================== GLOBAL ==================== */
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+body { background-color:#f8f9fa; color:#333; font-size:1rem; }
+
+/* ==================== HEADER ==================== */
+header {
+  display:flex; justify-content:space-between; align-items:center;
+  background-color:#656283; padding:10px 20px; color:white; flex-wrap:wrap;
+}
+/* HEADER LOGO UPDATED TO 70x70 */
+header .logo img { width:70px; height:70px; border-radius:50%; }
+
+nav { display:flex; gap:20px; flex-wrap:wrap; }
+nav a { color:white; text-decoration:none; font-weight:bold; transition:0.3s; }
+nav a:hover { color:#ddd; }
+.header-icons { display:flex; align-items:center; gap:15px; cursor:pointer; }
+.search-container { position:relative; }
+#search-bar {
+  display:none; position:absolute; top:35px; right:0;
+  padding:8px 12px; border-radius:5px; border:none;
+}
+.account-dropdown { position:relative; }
+.dropdown-menu {
+  display:none; position:absolute; right:0; top:35px;
+  background-color:#222; border-radius:5px; overflow:hidden; z-index:10;
+}
+.dropdown-menu a {
+  display:block; color:white; padding:10px 20px; text-decoration:none;
+}
+.dropdown-menu a:hover { background-color:#333; }
+
+/* ==================== UPDATE ACCOUNT ==================== */
+.update-box {
+  background-color:#dcdce8; width:90%; max-width:400px;
+  margin:80px auto; padding:30px; border-radius:12px; text-align:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+.update-box h2 { color:#333; font-size:22px; margin-bottom:20px; }
+.update-box form { display:flex; flex-direction:column; gap:15px; }
+.update-box input {
+  padding:14px; border:none; border-radius:6px;
+  background-color:#c7c7d5; font-size:15px; outline:none;
+}
+.update-box button {
+  background-color:#9c9cb8; color:white; border:none; padding:12px;
+  border-radius:6px; cursor:pointer; font-weight:600; transition:0.3s;
+}
+.update-box button:hover { background-color:#7b7ba1; }
+
+/* Popup styling */
+.popup {
+  display:none; position:fixed; top:50%; left:50%;
+  transform:translate(-50%, -50%); background:white;
+  border-radius:10px; padding:20px 40px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  text-align:center; z-index:100;
+}
+.popup button {
+  background-color:#656283; color:white; border:none;
+  padding:8px 20px; border-radius:5px; cursor:pointer;
+}
+
+/* ==================== FOOTER ==================== */
+.footer {
+  background-color:#656283; color:white;
+  padding:40px 20px; display:flex;
+  justify-content:space-between; align-items:center;
+  flex-wrap:wrap; text-align:left; margin-top:60px;
+}
+/* FOOTER LOGO 70x70 */
+.footer-logo img { width:70px; height:70px; border-radius:50%; }
+
+.footer-links {
+  flex:1; display:flex; justify-content:center;
+  gap:50px; flex-wrap:wrap; margin-top:20px;
+}
+.footer-section h3 { margin-bottom:10px; font-size:1.1em; }
+.footer-section a { display:block; color:white; text-decoration:none; margin:5px 0; }
+.footer-bottom {
+  width:100%; text-align:center;
+  border-top:1px solid #333; margin-top:20px;
+  padding-top:10px; color:#aaa;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+/* Smartphones */
+@media(max-width: 600px){
+
+  header {
+    padding:10px 15px;
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+  }
+
+  nav {
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:12px;
+  }
+
+  .header-icons { justify-content:center; }
+
+  #search-bar {
+    top:30px;
+    width:150px;
+  }
+
+  .update-box {
+    width:95%;
+    padding:20px;
+    margin:40px auto;
+  }
+
+  .update-box h2 {
+    font-size:20px;
+  }
+
+  .footer {
+    text-align:center;
+  }
+
+  .footer-links {
+    flex-direction:column;
+    gap:30px;
+  }
+}
+
+/* Tablets */
+@media(max-width: 900px){
+
+  header {
+    padding:15px 20px;
+  }
+
+  nav {
+    gap:15px;
+  }
+
+  .footer-links {
+    gap:40px;
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- Header -->
+<header>
+  <div class="logo"><img src="logo.png" alt=""></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="cart.html">Cart</a>
+    <a href="wishlist.html">Wishlist</a>
+  </nav>
+  <div class="header-icons">
+    <div class="search-container">
+      <i id="search-icon">🔍</i>
+      <input type="text" id="search-bar" placeholder="Search product...">
+    </div>
+    <div class="account-dropdown">
+      <i id="account-icon">👤</i>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <a href="profile.html">Account</a>
+        <a href="login.html">Log In</a>
+        <a href="logout.html">Log Out</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Update Account -->
+<main>
+  <section class="update-box">
+    <h2>UPDATE ACCOUNT</h2>
+    <form id="updateForm">
+      <input type="text" id="name" placeholder="CHANGE NAME" required>
+      <input type="email" id="email" placeholder="CHANGE EMAIL" required>
+      <input type="password" id="currentPassword" placeholder="CURRENT PASSWORD" required>
+      <input type="password" id="newPassword" placeholder="NEW PASSWORD">
+      <button type="submit">UPDATE</button>
+    </form>
+  </section>
+</main>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+  <h3>Account Updated Successfully!</h3>
+  <button id="okBtn">OK</button>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo"><img src="logo.png" alt=""></div>
+  <div class="footer-links">
+    <div class="footer-section">
+      <h3>Company</h3>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-section">
+      <h3>Our Information</h3>
+      <a href="terms.html">Terms & Conditions</a>
+      <a href="FAQ.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Ngolay. All rights reserved.</div>
+</footer>
+
+<!-- Firebase -->
+<script type="module">
+/* Your JS remains unchanged */
+</script>
+
+</body>
+</html>

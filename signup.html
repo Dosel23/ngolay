@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | Ngolay</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body { background-color: #f8f9fa; color: #656283; }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #656283;
+      padding: 10px 25px;
+      color: white;
+      flex-wrap: wrap;
+    }
+    .logo img { width: 70px; height: 70px; border-radius: 50%; }
+
+    .nav { display: flex; flex-wrap: wrap; gap: 12px; }
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .nav a:hover, .nav a.active { color: #ddd; }
+
+    .header-icons { display: flex; align-items: center; gap: 15px; }
+
+    /* Search */
+    .search-container { position: relative; }
+    #search-bar {
+      display: none;
+      position: absolute;
+      top: 35px;
+      right: 0;
+      width: 150px;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    /* Account Dropdown */
+    .account-dropdown { position: relative; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 35px;
+      background: #222;
+      border-radius: 5px;
+      overflow: hidden;
+      z-index: 999;
+      width: 140px;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+    }
+    .dropdown-menu a:hover { background: #333; }
+
+    /* FORM */
+    .form-container {
+      width: 90%;
+      max-width: 400px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; margin-bottom: 20px; color: #656283; }
+
+    form { display: flex; flex-direction: column; gap: 15px; }
+    input {
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+    button {
+      padding: 12px;
+      background: #656283;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+    p { text-align: center; margin-top: 10px; }
+    a { color: #007bff; }
+
+    /* FOOTER */
+    .footer {
+      background: #656283;
+      color: white;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    .footer-logo img {
+      width: 65px; height: 65px; border-radius: 50%;
+    }
+    .footer-links {
+      display: flex;
+      gap: 50px;
+      flex-wrap: wrap;
+    }
+    .footer-section a {
+      display: block;
+      margin: 5px 0;
+      color: white;
+      text-decoration: none;
+    }
+    .footer-bottom {
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+      color: #ccc;
+    }
+
+    /* ---------------- RESPONSIVE ---------------- */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .nav {
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .header-icons {
+        justify-content: center;
+      }
+
+      .dropdown-menu, #search-bar {
+        right: 50%;
+        transform: translateX(50%);
+      }
+
+      .footer {
+        text-align: center;
+        justify-content: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+
+      .form-container {
+        margin-top: 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo img { width: 60px; height: 60px; }
+
+      .nav a { font-size: 14px; }
+
+      input, button {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo"><img src="logo.png"></div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="categories.html">Categories</a>
+      <a href="cart.html">Cart</a>
+      <a href="wishlist.html">Wishlist</a>
+    </nav>
+
+    <div class="header-icons">
+      <div class="search-container">
+        <i id="search-icon">🔍</i>
+        <input type="text" id="search-bar" placeholder="Search products...">
+      </div>
+
+      <div class="account-dropdown">
+        <i id="account-icon">👤</i>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="account.html">Account</a>
+          <a href="login.html">Log In</a>
+          <a href="#" id="logout-btn">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIGNUP FORM -->
+  <div class="form-container">
+    <h2>Sign Up</h2>
+    <form id="signup-form">
+      <input type="text" id="username" placeholder="Full Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Log In</a></p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo"><img src="logo.png"></div>
+
+    <div class="footer-links">
+      <div class="footer-section">
+        <h3>Company</h3>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="footer-section">
+        <h3>Information</h3>
+        <a href="terms.html">Terms & Conditions</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">© 2025 Ngolay. All Rights Reserved.</div>
+  </footer>
+
+  <!-- FIREBASE SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+      authDomain: "ngolay-project.firebaseapp.com",
+      projectId: "ngolay-project",
+      storageBucket: "ngolay-project.firebasestorage.app",
+      messagingSenderId: "236457585222",
+      appId: "1:236457585222:web:9133bb46a97ef678d23847",
+      measurementId: "G-34BC1Z5PPM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // SIGN UP
+    document.getElementById("signup-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!username || !email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          name: username,
+          email: email,
+          createdAt: new Date().toISOString()
+        });
+
+        alert("Sign-up successful!");
+        window.location.href = "home.html";
+
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    // Search toggle
+    document.getElementById("search-icon").onclick = () => {
+      const bar = document.getElementById("search-bar");
+      bar.style.display = bar.style.display === "block" ? "none" : "block";
+    };
+
+    // Dropdown toggle
+    document.getElementById("account-icon").onclick = () => {
+      const menu = document.getElementById("dropdown-menu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    };
+
+    // Logout
+    document.getElementById("logout-btn").onclick = async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    };
+  </script>
+
+</body>
+</html>
