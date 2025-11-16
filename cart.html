@@ -61,175 +61,294 @@
     .footer-section a { display:block; color:white; text-decoration:none; margin:5px 0; font-size:1.05em; }
     .footer-bottom { width:100%; text-align:center; border-top:1px solid #333; margin-top:20px; padding-top:10px; color:#aaa; }
 
-    /* ==================== RESPONSIVE ==================== */
-    @media (max-width: 900px) {
-
-      .header {
-        padding: 10px 20px;
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-      }
-
-      .nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-      }
-
-      .nav a {
-        font-size: 0.95rem;
-        margin: 3px 5px;
-      }
-
-      #search-bar {
-        right: 0;
-        width: 160px;
-      }
-
-      table {
-        min-width: 550px;
-      }
-
-      .cart-container {
-        padding: 10px;
-      }
-
-      .cart-summary {
-        padding: 15px;
-      }
-
-      .footer {
-        flex-direction: column;
-        text-align: center;
-        padding: 25px;
-        gap: 20px;
-      }
-
-      .footer-links {
-        flex-direction: column;
-        gap: 20px;
-      }
-    }
-
-    @media (max-width: 500px) {
-
-      body {
-        font-size: 0.95rem;
-      }
-
-      .nav a {
-        font-size: 0.85rem;
-      }
-
-      .header-icons {
-        gap: 10px;
-      }
-
-      #search-bar {
-        width: 130px;
-      }
-
-      table {
-        min-width: 480px;
-      }
-
-      td img {
-        width: 50px;
-        height: 50px;
-      }
-    }
-
   </style>
 </head>
 <body>
-  
-  <!-- your same HTML content below -->
-  <!-- (nothing changed, everything stays same) -->
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
-    <nav class="nav">
-      <a href="index.html">Home</a>
-      <a href="listing.html">Categories</a>
-      <a href="cart.html" style="background-color: rgba(255,255,255,0.2);">Cart</a>
-      <a href="wishlist.html">Wishlist</a>
-    </nav>
-    <div class="header-icons">
-      <div class="search-container">
-        <i class="search-icon" id="search-toggle">🔍</i>
-        <input type="text" id="search-bar" placeholder="Search products...">
-        <div id="search-results"></div>
-      </div>
-      <div class="account-dropdown">
-        <i class="account-icon" id="account-toggle">👤</i>
-        <div class="dropdown-menu" id="account-menu">
-          <a href="account.html">Account</a>
-          <a href="login.html">Log In</a>
-          <a href="logout.html">Log Out</a>
-        </div>
+<header class="header">
+  <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="listing.html">Categories</a>
+    <a href="cart.html" style="background-color: rgba(255,255,255,0.2);">Cart</a>
+    <a href="wishlist.html">Wishlist</a>
+  </nav>
+  <div class="header-icons">
+    <div class="search-container">
+      <i class="search-icon" id="search-toggle">🔍</i>
+      <input type="text" id="search-bar" placeholder="Search products...">
+      <div id="search-results"></div>
+    </div>
+    <div class="account-dropdown">
+      <i class="account-icon" id="account-toggle">👤</i>
+      <div class="dropdown-menu" id="account-menu">
+        <a href="account.html">Account</a>
+        <a href="login.html">Log In</a>
+        <a href="logout.html">Log Out</a>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
-  <!-- CART SECTION -->
-  <section class="cart-container">
-    <h2>My Cart</h2>
-    <div class="cart-table-wrapper">
-      <table id="cart-table">
-        <thead>
-          <tr>
-            <th>✖</th>
-            <th>Item</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Color</th>
-            <th>Size</th>
-            <th>Buy</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+<section class="cart-container">
+  <h2>My Cart</h2>
+  <div class="cart-table-wrapper">
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>✖</th>
+          <th>Item</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Color</th>
+          <th>Size</th>
+          <th>Buy</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="cart-summary" id="cart-summary" style="display:none;">
+    <h3>Order Summary</h3>
+    <div class="summary-row">
+      <span>Subtotal:</span>
+      <span id="subtotal">Nu. 0</span>
     </div>
-
-    <div class="cart-summary" id="cart-summary" style="display:none;">
-      <h3>Order Summary</h3>
-      <div class="summary-row">
-        <span>Subtotal:</span>
-        <span id="subtotal">Nu. 0</span>
-      </div>
-      <div class="summary-row total-row">
-        <span>Total Amount:</span>
-        <span id="total">Nu. 0</span>
-      </div>
+    <div class="summary-row total-row">
+      <span>Total Amount:</span>
+      <span id="total">Nu. 0</span>
     </div>
+  </div>
 
-    <button id="checkout-all-btn" class="checkout-all-btn">Checkout All Items</button>
-  </section>
+  <button id="checkout-all-btn" class="checkout-all-btn">Checkout All Items</button>
+</section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
-    <div class="footer-links">
-      <div class="footer-section">
-        <h3>Company</h3>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <div class="footer-section">
-        <h3>Our Information</h3>
-        <a href="terms.html">Terms & Conditions</a>
-        <a href="faq.html">FAQ</a>
-      </div>
+<footer class="footer">
+  <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <div class="footer-links">
+    <div class="footer-section">
+      <h3>Company</h3>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
     </div>
-    <div class="footer-bottom"><p>© 2025 Ngolay. All Rights Reserved</p></div>
-  </footer>
+    <div class="footer-section">
+      <h3>Our Information</h3>
+      <a href="terms.html">Terms & Conditions</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 Ngolay. All Rights Reserved</p></div>
+</footer>
 
-  <!-- FIREBASE + JS (unchanged) -->
-  <!-- Your same script here -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, deleteDoc, doc, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+    authDomain: "ngolay-project.firebaseapp.com",
+    projectId: "ngolay-project",
+    storageBucket: "ngolay-project.appspot.com",
+    messagingSenderId: "236457585222",
+    appId: "1:236457585222:web:9133bb46a97ef678d23847"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+  let cartItems = [];
+
+  const tbody = document.querySelector('#cart-table tbody');
+  const checkoutAllBtn = document.getElementById('checkout-all-btn');
+  const cartSummary = document.getElementById('cart-summary');
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      alert("Please log in to view your cart");
+      window.location.href = 'login.html';
+      return;
+    }
+    currentUser = user;
+    await loadCart();
+  });
+
+  async function loadCart(){
+    try {
+      const cartRef = collection(db, 'cart');
+      const q = query(cartRef, where('userId','==',currentUser.uid));
+      const snapshot = await getDocs(q);
+
+      cartItems = [];
+
+      snapshot.forEach(d => {
+        const data = d.data();
+        if (data.userId === currentUser.uid) {
+          cartItems.push({ id: d.id, ...data });
+        }
+      });
+
+      renderCart();
+      updateCartSummary();
+
+    } catch (error) {
+      console.error("Error loading cart:", error);
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-cart">Error loading cart items</td></tr>';
+    }
+  }
+
+  function renderCart(){
+    tbody.innerHTML = '';
+
+    if(cartItems.length === 0){
+      tbody.innerHTML='<tr><td colspan="7" class="empty-cart">Your cart is empty. <a href="listing.html">Start shopping</a></td></tr>';
+      checkoutAllBtn.style.display = 'none';
+      cartSummary.style.display = 'none';
+      return;
+    }
+
+    checkoutAllBtn.style.display = 'block';
+    cartSummary.style.display = 'block';
+
+    cartItems.forEach((item) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><button class="remove-btn" data-item-id="${item.id}">✖</button></td>
+        <td><img src="${item.images?.[0] || 'logo.png'}" alt="${item.name}"><br>${item.name}</td>
+        <td>Nu. ${item.price}</td>
+        <td><input type="number" min="1" value="${item.quantity || 1}" class="quantity-input" data-item-id="${item.id}"></td>
+        <td><input type="text" value="${item.selectedColor || ''}" placeholder="Color" class="color-input" data-item-id="${item.id}"></td>
+        <td><input type="text" value="${item.selectedSize || ''}" placeholder="Size" class="size-input" data-item-id="${item.id}"></td>
+        <td><button class="buy-btn" data-item-id="${item.id}">Buy Now</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    addEventListeners();
+  }
+
+  function updateCartSummary() {
+    if (cartItems.length === 0) {
+      cartSummary.style.display = 'none';
+      return;
+    }
+
+    let subtotal = 0;
+    cartItems.forEach(item => {
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity) || 1;
+      subtotal += price * quantity;
+    });
+
+    document.getElementById('subtotal').textContent = `Nu. ${subtotal.toFixed(2)}`;
+    document.getElementById('total').textContent = `Nu. ${subtotal.toFixed(2)}`;
+  }
+
+  function addEventListeners() {
+
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const itemId = e.target.dataset.itemId;
+        const item = cartItems.find(item => item.id === itemId);
+
+        if (!item) return;
+
+        if (confirm("Remove this item from your cart?")) {
+          await deleteDoc(doc(db, 'cart', itemId));
+          cartItems = cartItems.filter(item => item.id !== itemId);
+          renderCart();
+          updateCartSummary();
+        }
+      });
+    });
+
+    document.querySelectorAll('.quantity-input').forEach(input => {
+      input.addEventListener('change', async e => {
+        const itemId = e.target.dataset.itemId;
+        const newQuantity = parseInt(e.target.value);
+        if (newQuantity < 1) { e.target.value = 1; return; }
+
+        await updateDoc(doc(db, 'cart', itemId), { quantity: newQuantity });
+
+        const index = cartItems.findIndex(item => item.id === itemId);
+        if (index !== -1) cartItems[index].quantity = newQuantity;
+
+        updateCartSummary();
+      });
+    });
+
+    document.querySelectorAll('.color-input').forEach(input => {
+      input.addEventListener('input', async e => {
+        const itemId = e.target.dataset.itemId;
+        const newColor = e.target.value;
+
+        await updateDoc(doc(db, 'cart', itemId), { selectedColor: newColor });
+
+        const index = cartItems.findIndex(item => item.id === itemId);
+        if (index !== -1) cartItems[index].selectedColor = newColor;
+      });
+    });
+
+    document.querySelectorAll('.size-input').forEach(input => {
+      input.addEventListener('input', async e => {
+        const itemId = e.target.dataset.itemId;
+        const newSize = e.target.value;
+
+        await updateDoc(doc(db, 'cart', itemId), { selectedSize: newSize });
+
+        const index = cartItems.findIndex(item => item.id === itemId);
+        if (index !== -1) cartItems[index].selectedSize = newSize;
+      });
+    });
+
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const itemId = e.target.dataset.itemId;
+        const item = cartItems.find(item => item.id === itemId);
+
+        const qty = document.querySelector(`.quantity-input[data-item-id="${itemId}"]`)?.value;
+        const col = document.querySelector(`.color-input[data-item-id="${itemId}"]`)?.value;
+        const size = document.querySelector(`.size-input[data-item-id="${itemId}"]`)?.value;
+
+        const updatedItem = {
+          ...item,
+          quantity: parseInt(qty || item.quantity || 1),
+          selectedColor: col || '',
+          selectedSize: size || ''
+        };
+
+        sessionStorage.setItem('checkoutItems', JSON.stringify([updatedItem]));
+        sessionStorage.setItem('checkoutType', 'single');
+
+        window.location.href = 'checkout.html';
+      });
+    });
+  }
+
+  checkoutAllBtn.addEventListener('click', () => {
+    const updatedCart = cartItems.map(item => {
+      const qty = document.querySelector(`.quantity-input[data-item-id="${item.id}"]`)?.value;
+      const col = document.querySelector(`.color-input[data-item-id="${item.id}"]`)?.value;
+      const size = document.querySelector(`.size-input[data-item-id="${item.id}"]`)?.value;
+
+      return {
+        ...item,
+        quantity: parseInt(qty || item.quantity || 1),
+        selectedColor: col || '',
+        selectedSize: size || ''
+      };
+    });
+
+    sessionStorage.setItem('checkoutItems', JSON.stringify(updatedCart));
+    sessionStorage.setItem('checkoutType', 'multiple');
+
+    window.location.href = 'checkout.html';
+  });
+
+</script>
 
 </body>
 </html>
-
