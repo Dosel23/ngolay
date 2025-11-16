@@ -43,39 +43,22 @@ header nav a:hover{color:#ddd;}
 
 /* Success popup */
 .popup{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;}
-.popup-content{background:white;padding:30px;border-radius:10px;text-align:center;max-width:400px;width:90%;word-wrap:break-word;}
+.popup-content{background:white;padding:30px;border-radius:10px;text-align:center;max-width:400px;width:90%;}
 .popup-content h3{color:#656283;margin-bottom:15px;}
 .popup-btn{background:#656283;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:bold;margin:10px 5px;transition:0.3s;}
 .popup-btn:hover{background:#8C89A6;}
-.popup-btn.secondary{background:#6c757d;}
-.popup-btn.secondary:hover{background:#5a6268;}
 
 /* Responsive adjustments */
-@media(max-width:1024px){
-  .checkout-content{flex-direction:column;}
-  .order-item{flex-direction:row;flex-wrap:wrap;text-align:left;}
-  .order-item img{width:70px;height:70px;}
-}
-
 @media(max-width:768px){
   .checkout-content{flex-direction:column;}
   .order-item{flex-direction:column;text-align:center;}
-  .order-item img{width:100px;height:100px;margin-bottom:10px;}
-  .order-summary{margin-top:20px;}
+  .order-item img{width:100px;height:100px;}
 }
 
 @media(max-width:480px){
   header{flex-direction:column;align-items:flex-start;}
   header nav{margin-top:10px;}
   .checkout-container{padding:10px;}
-  .order-item img{width:80px;height:80px;}
-  .item-details h3{font-size:1em;}
-  .item-details p{font-size:0.85em;}
-  .item-price{font-size:1em;}
-  .confirm-btn{padding:10px 20px;font-size:1em;}
-  .back-btn{padding:8px 15px;font-size:0.9em;}
-  .popup-content{padding:20px;}
-  .popup-btn{padding:8px 15px;font-size:0.9em;}
 }
 </style>
 </head>
@@ -96,7 +79,7 @@ header nav a:hover{color:#ddd;}
   
   <div class="checkout-content">
     <div class="order-items" id="order-items">
-      <!-- Order items dynamically inserted -->
+      <!-- Order items will be dynamically inserted here -->
     </div>
     
     <div class="order-summary">
@@ -132,12 +115,13 @@ header nav a:hover{color:#ddd;}
   </div>
 </section>
 
+<!-- Success Popup -->
 <div class="popup" id="success-popup">
   <div class="popup-content">
     <h3>🎉 Order Placed Successfully!</h3>
     <p id="order-success-message">Your order has been confirmed. The seller will contact you soon.</p>
     <button class="popup-btn" onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
-    <button class="popup-btn secondary" onclick="window.location.href='index.html'">Continue Shopping</button>
+    <button class="popup-btn" onclick="window.location.href='index.html'" style="background:#6c757d;">Continue Shopping</button>
   </div>
 </div>
 
@@ -146,10 +130,9 @@ header nav a:hover{color:#ddd;}
 </footer>
 
 <script type="module">
-// Your existing JS code remains unchanged
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
@@ -175,6 +158,7 @@ let currentUser = null;
 let checkoutItems = [];
 let orderTotal = 0;
 
+// Load checkout items from sessionStorage
 onAuthStateChanged(auth, async user => {
   if(!user){ 
     alert("Please log in to continue with checkout");
@@ -186,21 +170,33 @@ onAuthStateChanged(auth, async user => {
 });
 
 function loadCheckoutItems() {
+  // Get items from sessionStorage
   const storedItems = sessionStorage.getItem('checkoutItems');
-  if(!storedItems){
-    orderItemsContainer.innerHTML = '<div class="empty-checkout">No items found. Please add items to your cart first.</div>';
+  const checkoutType = sessionStorage.getItem('checkoutType');
+  
+  if (!storedItems) {
+    orderItemsContainer.innerHTML = '<div class="empty-checkout">No items found. Please add items to your cart first and click "Buy Now".</div>';
     return;
   }
+  
   checkoutItems = JSON.parse(storedItems);
+  
+  if (checkoutItems.length === 0) {
+    orderItemsContainer.innerHTML = '<div class="empty-checkout">No items found. Please add items to your cart first and click "Buy Now".</div>';
+    return;
+  }
+  
   renderCheckoutItems();
   calculateTotal();
 }
 
-function renderCheckoutItems(){
+function renderCheckoutItems() {
   orderItemsContainer.innerHTML = '';
+  
   checkoutItems.forEach(item => {
     const itemElement = document.createElement('div');
     itemElement.className = 'order-item';
+    
     itemElement.innerHTML = `
       <img src="${item.images?.[0] || 'logo.png'}" alt="${item.name}">
       <div class="item-details">
@@ -214,32 +210,112 @@ function renderCheckoutItems(){
         Nu. ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
       </div>
     `;
+    
     orderItemsContainer.appendChild(itemElement);
   });
 }
 
-function calculateTotal(){
-  orderTotal = checkoutItems.reduce((acc, item) => acc + ((item.price || 0) * (item.quantity || 1)), 0);
+function calculateTotal() {
+  orderTotal = 0;
+  
+  checkoutItems.forEach(item => {
+    orderTotal += (item.price || 0) * (item.quantity || 1);
+  });
+  
   subtotalEl.textContent = `Nu. ${orderTotal.toFixed(2)}`;
   totalEl.textContent = `Nu. ${orderTotal.toFixed(2)}`;
 }
 
+// Confirm order button
 confirmOrderBtn.addEventListener('click', async () => {
-  if(checkoutItems.length === 0){ alert('No items to order!'); return; }
+  if (checkoutItems.length === 0) {
+    alert('No items to order!');
+    return;
+  }
+  
   try {
+    // Generate a unique order ID
     const orderId = "ORD-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-    for(const item of checkoutItems){
-      const orderRef = doc(db, "orders", orderId + "_" + item.id);
-      await setDoc(orderRef, { ...item, orderId: orderId, buyerId: currentUser.uid, status:'Pending', paymentMethod:'Cash on Exchange', totalAmount:orderTotal, createdAt:new Date() });
-      if(item.id) await deleteDoc(doc(db,"cart",item.id));
+    
+    // Create order items array in the format dashboard expects
+    const orderItems = checkoutItems.map(item => ({
+      productId: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity || 1,
+      color: item.selectedColor || 'Not specified',
+      size: item.selectedSize || 'Not specified',
+      sellerId: item.sellerId,
+      image: item.images?.[0] || ''
+    }));
+    
+    // Create a single order document with all items
+    const orderRef = doc(db, "orders", orderId);
+    
+    await setDoc(orderRef, {
+      orderId: orderId,
+      items: orderItems,
+      buyerId: currentUser.uid,
+      buyerName: currentUser.displayName || 'Buyer',
+      userId: currentUser.uid, // This is what the dashboard queries for buyer orders
+      status: 'Pending',
+      paymentMethod: 'Cash on Exchange',
+      totalAmount: orderTotal,
+      subtotal: orderTotal,
+      createdAt: new Date()
+    });
+    
+    // Create notifications for each seller
+    for (const item of checkoutItems) {
+      const notificationRef = doc(db, "notifications", item.sellerId + "_" + orderId + "_" + item.id);
+      
+      await setDoc(notificationRef, {
+        orderId: orderId,
+        productId: item.id,
+        productName: item.name,
+        buyerId: currentUser.uid,
+        buyerName: currentUser.displayName || 'Buyer',
+        sellerId: item.sellerId,
+        color: item.selectedColor || 'Not specified',
+        size: item.selectedSize || 'Not specified',
+        message: `New order for ${item.name} (Qty: ${item.quantity || 1})`,
+        read: false,
+        createdAt: new Date()
+      });
     }
+    
+    // Remove items from cart
+    for (const item of checkoutItems) {
+      if (item.id) {
+        try {
+          await deleteDoc(doc(db, "cart", item.id));
+        } catch (error) {
+          console.error("Error removing item from cart:", error);
+          // Continue with order even if cart removal fails
+        }
+      }
+    }
+    
+    // Clear sessionStorage
     sessionStorage.removeItem('checkoutItems');
     sessionStorage.removeItem('checkoutType');
+    
+    // Show success popup instead of alert
     orderSuccessMessage.textContent = `Order ${orderId} has been placed successfully! The seller will contact you soon.`;
     successPopup.style.display = 'flex';
-  } catch(e){ console.error(e); alert("Failed to place order. Please try again."); }
+    
+  } catch (error) {
+    console.error("Error placing order:", error);
+    alert("Failed to place order. Please try again.");
+  }
+});
+
+// Handle page refresh/back button
+window.addEventListener('beforeunload', () => {
+  // Optionally clear sessionStorage when leaving checkout
+  // sessionStorage.removeItem('checkoutItems');
+  // sessionStorage.removeItem('checkoutType');
 });
 </script>
-
 </body>
 </html>
