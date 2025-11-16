@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ngolay | Dashboard</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+body { background:#f8f9fa; color:#656283; }
+
+/* Header Styles */
+.header{ 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    background:#656283; 
+    padding:10px 40px; 
+    color:white; 
+    flex-wrap:wrap;
+    gap: 15px;
+}
+.logo { 
+    margin-right: auto; /* This pushes everything else to the right */
+}
+.logo img{ width:80px; height:80px; border-radius:50%; }
+.nav { 
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto; /* Center the nav */
+}
+.nav a{ color:white; text-decoration:none; font-weight:bold; padding: 5px 10px; border-radius: 5px; transition: 0.3s; }
+.nav a:hover{ background: rgba(255,255,255,0.2); }
+.header-icons{ 
+    display:flex; 
+    align-items:center; 
+    gap:15px; 
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: auto; /* This pushes icons to the right */
+}
+
+/* Rest of your CSS remains exactly the same */
+.dashboard-container{ 
+    padding:40px 20px; 
+    display:flex; 
+    flex-direction: column;
+    gap:30px; 
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.role-switch{ 
+    text-align:center; 
+    margin-bottom:20px; 
+    width:100%; 
+}
+.role-switch select{ 
+    padding:12px 20px; 
+    border-radius:8px; 
+    border:2px solid #656283; 
+    font-size:16px; 
+    background: white;
+    cursor: pointer;
+    min-width: 250px;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.card{ 
+    background:#fff; 
+    border-radius:12px; 
+    padding:25px; 
+    box-shadow:0 4px 15px rgba(0,0,0,.1); 
+    min-height:450px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,.15);
+}
+
+.card h2 {
+    color: #656283;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.orders-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.orders-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.orders-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.orders-container::-webkit-scrollbar-thumb {
+    background: #656283;
+    border-radius: 10px;
+}
+
+.order-item{ 
+    border:1px solid #e0e0e0; 
+    border-radius:10px; 
+    padding:20px; 
+    margin-bottom:20px; 
+    background:#fafafa;
+    transition: all 0.3s ease;
+    position: relative;
+}
+.order-item:hover {
+    border-color: #656283;
+    background: #f8f9ff;
+}
+
+.order-item h4{ 
+    color:#656283; 
+    margin-bottom:12px; 
+    font-size: 1.2em;
+}
+.order-item ul{ 
+    margin:10px 0; 
+    padding-left:20px; 
+}
+.order-item li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.confirm-btn{ 
+    background:#656283; 
+    color:white; 
+    border:none; 
+    padding:10px 20px; 
+    border-radius:6px; 
+    margin-top:10px; 
+    cursor:pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+.confirm-btn:hover{ 
+    background:#8C89A6; 
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.button-group .confirm-btn,
+.button-group .delete-btn {
+    width: auto;
+    flex: 1;
+}
+
+.meeting-inputs{ 
+    margin-top:15px; 
+    padding:15px; 
+    background:#f0f2f5; 
+    border-radius:8px; 
+    border-left: 4px solid #656283;
+}
+.meeting-inputs input{ 
+    width:100%; 
+    padding:10px; 
+    margin:8px 0; 
+    border:1px solid #ccc; 
+    border-radius:6px;
+    font-size: 14px;
+}
+.meeting-info{ 
+    background:#e8f5e8; 
+    padding:15px; 
+    border-radius:8px; 
+    margin-top:15px;
+    border-left: 4px solid #28a745;
+}
+
+.order-status{ 
+    display:inline-block; 
+    padding:6px 12px; 
+    border-radius:20px; 
+    font-size:12px; 
+    font-weight:bold;
+    margin-left: 10px;
+}
+.status-pending{ background:#fff3cd; color:#856404; }
+.status-scheduled{ background:#d1ecf1; color:#0c5460; }
+.status-completed{ background:#d4edda; color:#155724; }
+
+.loading{ text-align:center; color:#666; font-style:italic; padding: 40px; }
+.no-orders{ 
+    text-align:center; 
+    color:#888; 
+    font-style:italic; 
+    padding:40px; 
+    background: #f9f9f9;
+    border-radius: 10px;
+    border: 2px dashed #ddd;
+}
+
+.footer{ 
+    background:#656283; 
+    color:white; 
+    padding:40px 20px; 
+    margin-top:50px; 
+}
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.footer-logo img{ width:70px; height:70px; border-radius:50%; }
+.footer-links{ 
+    display:flex; 
+    justify-content:center; 
+    gap:60px; 
+    margin:20px 0;
+    flex-wrap: wrap;
+}
+.footer-section{ 
+    text-align: center;
+    min-width: 150px;
+}
+.footer-section h3{ margin-bottom:15px; font-size: 1.2em; }
+.footer-section a{ 
+    display:block; 
+    color:white; 
+    text-decoration:none; 
+    margin:8px 0;
+    transition: color 0.3s;
+}
+.footer-section a:hover{ color:#ddd; text-decoration: underline; }
+.footer-bottom{ 
+    border-top:1px solid rgba(255,255,255,0.3); 
+    margin-top:30px; 
+    padding-top:20px; 
+    color:rgba(255,255,255,0.8); 
+    text-align:center;
+    width: 100%;
+}
+
+.notification-bell { 
+    position: relative; 
+    cursor: pointer; 
+    font-size: 1.5em; 
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+.notification-bell:hover {
+    background: rgba(255,255,255,0.2);
+}
+.notification-count { 
+    position: absolute; 
+    top: -5px; 
+    right: -5px; 
+    background: #ff4444; 
+    color: white; 
+    border-radius: 50%; 
+    width: 22px; 
+    height: 22px; 
+    font-size: 0.7em; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold;
+    border: 2px solid #656283;
+}
+
+.logout-btn { 
+    background:#dc3545; 
+    color:white; 
+    border:none; 
+    padding:10px 20px; 
+    border-radius:6px; 
+    cursor:pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.logout-btn:hover { 
+    background:#c82333; 
+    transform: translateY(-2px);
+}
+
+.notification-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    padding: 20px;
+    min-width: 320px;
+    max-width: 400px;
+    z-index: 1000;
+    border-left: 5px solid #656283;
+    animation: slideIn 0.4s ease-out;
+}
+
+.notification-popup.success { border-left-color: #28a745; }
+.notification-popup.warning { border-left-color: #ffc107; }
+.notification-popup.info { border-left-color: #17a2b8; }
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.notification-title {
+    font-weight: bold;
+    color: #656283;
+    font-size: 1.1em;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.notification-close:hover {
+    background: #f0f0f0;
+}
+
+.notification-message {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* ------------------ RESPONSIVE DESIGN ------------------ */
+@media (max-width: 1024px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+        max-width: 800px;
+    }
+    
+    .card {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .logo {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .nav {
+        gap: 10px;
+    }
+    
+    .nav a {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    
+    .header-icons {
+        margin-left: 0;
+    }
+    
+    .dashboard-container {
+        padding: 20px 15px;
+        gap: 20px;
+    }
+    
+    .cards-container {
+        gap: 20px;
+    }
+    
+    .card {
+        padding: 20px;
+        min-height: auto;
+    }
+    
+    .order-item {
+        padding: 15px;
+    }
+    
+    .footer-links {
+        gap: 30px;
+    }
+    
+    .notification-popup {
+        min-width: 280px;
+        right: 10px;
+        left: 10px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 15px;
+    }
+    
+    .logo img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .nav {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .nav a {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+    
+    .header-icons {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .role-switch select {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .dashboard-container {
+        padding: 15px 10px;
+    }
+    
+    .card {
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .order-item {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .footer {
+        padding: 30px 15px;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .footer-section {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .notification-popup {
+        min-width: 250px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .card {
+        min-height: auto;
+    }
+    
+    .order-item h4 {
+        font-size: 1.1em;
+    }
+    
+    .confirm-btn, .delete-btn {
+        padding: 12px 15px;
+        font-size: 0.9em;
+    }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="cart.html">Cart</a>
+    <a href="wishlist.html">Wishlist</a>
+  </nav>
+  <div class="header-icons">
+    <span id="user-greeting">Hello, User</span>
+    <!-- Notification Bell -->
+    <div class="notification-bell" id="notification-bell">
+      🔔
+      <div class="notification-count" id="notification-count" style="display: none;">0</div>
+    </div>
+    <button class="logout-btn" id="logout-btn">Log Out</button>
+  </div>
+</header>
+
+<div class="dashboard-container">
+  <!-- Role Switch -->
+  <div class="role-switch">
+    <label for="role-select"><b>Select Dashboard View:</b></label>
+    <select id="role-select">
+      <option value="buyer">🛒 Buyer Dashboard</option>
+      <option value="seller">📦 Seller Dashboard</option>
+    </select>
+  </div>
+
+  <!-- Cards Container -->
+  <div class="cards-container">
+    <!-- Buyer Dashboard -->
+    <div class="card" id="buyer-section">
+      <h2>🛒 Buyer Dashboard</h2>
+      <p style="color:#666; margin-bottom:20px;">Your orders and meeting details</p>
+      <div class="orders-container">
+        <div id="buyer-orders" class="loading">
+          Loading your orders...
+        </div>
+      </div>
+    </div>
+
+    <!-- Seller Dashboard -->
+    <div class="card" id="seller-section">
+      <h2>📦 Seller Dashboard</h2>
+      <p style="color:#666; margin-bottom:20px;">Manage orders for your products</p>
+      <div class="orders-container">
+        <div id="seller-orders" class="loading">
+          Loading your orders...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <div class="footer-links">
+      <div class="footer-section">
+        <h3>Company</h3>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Information</h3>
+        <a href="terms.html">Terms & Conditions</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 Ngolay. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+  authDomain: "ngolay-project.firebaseapp.com",
+  projectId: "ngolay-project",
+  storageBucket: "ngolay-project.appspot.com",
+  messagingSenderId: "236457585222",
+  appId: "1:236457585222:web:9133bb46a97ef678d23847"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const roleSelect = document.getElementById("role-select");
+const sellerSection = document.getElementById("seller-section");
+const buyerSection = document.getElementById("buyer-section");
+const sellerOrdersDiv = document.getElementById("seller-orders");
+const buyerOrdersDiv = document.getElementById("buyer-orders");
+const userGreeting = document.getElementById("user-greeting");
+const notificationBell = document.getElementById("notification-bell");
+const notificationCount = document.getElementById("notification-count");
+
+let currentUser = null;
+let unreadNotifications = [];
+
+onAuthStateChanged(auth, async user => {
+  if(!user){ 
+    window.location.href="login.html"; 
+    return; 
+  }
+  currentUser = user;
+  userGreeting.textContent = `Hello, ${user.email || user.displayName || 'User'}`;
+
+  loadBuyerOrders(user);
+  loadSellerOrders(user);
+  loadNotifications(user);
+});
+
+// Load and display notifications
+async function loadNotifications(user) {
+  try {
+    // Listen for seller notifications
+    const sellerNotifQuery = query(collection(db, "notifications"), where("sellerId", "==", user.uid), where("read", "==", false));
+    
+    onSnapshot(sellerNotifQuery, (snapshot) => {
+      unreadNotifications = [];
+      snapshot.docs.forEach(doc => {
+        const notification = { id: doc.id, ...doc.data() };
+        unreadNotifications.push(notification);
+        
+        // Show popup for new notifications
+        if (notification.createdAt && isRecentNotification(notification.createdAt)) {
+          showNotificationPopup("New Order!", `You have a new order for ${notification.productName}`, "info");
+        }
+      });
+      
+      // Update notification badge
+      updateNotificationBadge();
+    });
+
+    // Listen for buyer notifications (meeting updates)
+    const buyerOrdersQuery = query(collection(db, "orders"), where("userId", "==", user.uid));
+    
+    onSnapshot(buyerOrdersQuery, (snapshot) => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === "modified") {
+          const orderData = change.doc.data();
+          const oldOrderData = change.oldDoc?.data();
+          
+          // Check if meeting info was just added
+          if (orderData.meeting && (!oldOrderData?.meeting || orderData.meeting.sentAt !== oldOrderData.meeting.sentAt)) {
+            showNotificationPopup("Meeting Scheduled!", `Seller has set a meeting for your order ${orderData.orderId}`, "success");
+          }
+          
+          // Check if order was just completed
+          if (orderData.status === "Completed" && oldOrderData?.status !== "Completed") {
+            showNotificationPopup("Order Completed!", `Your order ${orderData.orderId} has been marked as completed`, "success");
+          }
+        }
+      });
+    });
+
+  } catch (error) {
+    console.error("Error loading notifications:", error);
+  }
+}
+
+// Show notification popup
+function showNotificationPopup(title, message, type = "info") {
+  const popup = document.createElement('div');
+  popup.className = `notification-popup ${type}`;
+  popup.innerHTML = `
+    <div class="notification-header">
+      <div class="notification-title">${title}</div>
+      <button class="notification-close">&times;</button>
+    </div>
+    <div class="notification-message">${message}</div>
+  `;
+
+  document.body.appendChild(popup);
+
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    if (popup.parentNode) {
+      popup.parentNode.removeChild(popup);
+    }
+  }, 5000);
+
+  // Close button functionality
+  popup.querySelector('.notification-close').addEventListener('click', () => {
+    popup.parentNode.removeChild(popup);
+  });
+}
+
+// Update notification badge
+function updateNotificationBadge() {
+  if (unreadNotifications.length > 0) {
+    notificationCount.style.display = 'flex';
+    notificationCount.textContent = unreadNotifications.length > 9 ? '9+' : unreadNotifications.length;
+  } else {
+    notificationCount.style.display = 'none';
+  }
+}
+
+// Check if notification is recent (last 10 seconds)
+function isRecentNotification(timestamp) {
+  const notificationTime = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  const now = new Date();
+  return (now - notificationTime) < 10000; // 10 seconds
+}
+
+// Load Buyer Orders - Only orders they placed
+async function loadBuyerOrders(user) {
+  try {
+    const ordersQuery = query(collection(db, "orders"), where("userId", "==", user.uid));
+    
+    onSnapshot(ordersQuery, (snapshot) => {
+      buyerOrdersDiv.innerHTML = '';
+      
+      if (snapshot.empty) {
+        buyerOrdersDiv.innerHTML = '<div class="no-orders">You haven\'t placed any orders yet.</div>';
+        return;
+      }
+      
+      let ordersArray = [];
+      
+      snapshot.docs.forEach(orderDoc => {
+        const orderData = orderDoc.data();
+        ordersArray.push({ id: orderDoc.id, ...orderData });
+      });
+      
+      ordersArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      ordersArray.forEach(order => {
+        const orderDiv = document.createElement("div");
+        orderDiv.className = "order-item";
+        
+        const statusClass = getStatusClass(order.status);
+        
+        let itemsHtml = '';
+        let totalAmount = 0;
+        
+        if (order.items && Array.isArray(order.items)) {
+          itemsHtml = order.items.map(item => `
+            <li>
+              <strong>${item.name}</strong> x ${item.quantity}<br>
+              ${item.color && item.color !== 'Not specified' ? `Color: ${item.color}<br>` : ''}
+              ${item.size && item.size !== 'Not specified' ? `Size: ${item.size}<br>` : ''}
+              Price: Nu. ${(item.price * item.quantity).toFixed(2)}
+            </li>
+          `).join('');
+          totalAmount = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        } else {
+          itemsHtml = `
+            <li>
+              <strong>${order.productName || 'Product'}</strong> x ${order.quantity || 1}<br>
+              ${order.color && order.color !== 'Not specified' ? `Color: ${order.color}<br>` : ''}
+              ${order.size && order.size !== 'Not specified' ? `Size: ${order.size}<br>` : ''}
+              Price: Nu. ${((order.price || 0) * (order.quantity || 1)).toFixed(2)}
+            </li>
+          `;
+          totalAmount = (order.price || 0) * (order.quantity || 1);
+        }
+        
+        orderDiv.innerHTML = `
+          <h4>Order: ${order.orderId || order.id}</h4>
+          <p>
+            <strong>Status:</strong> 
+            <span class="order-status ${statusClass}">${order.status || 'Pending'}</span>
+          </p>
+          <p><strong>Placed:</strong> ${new Date(order.createdAt?.toDate?.() || order.createdAt).toLocaleString()}</p>
+          <p><strong>Total:</strong> Nu. ${totalAmount.toFixed(2)}</p>
+          <p><strong>Items:</strong></p>
+          <ul>${itemsHtml}</ul>
+        `;
+        
+        if (order.meeting) {
+          orderDiv.innerHTML += `
+            <div class="meeting-info">
+              <p><strong>📅 Meeting Details from Seller:</strong></p>
+              <p><strong>Date & Time:</strong> ${new Date(order.meeting.datetime).toLocaleString()}</p>
+              <p><strong>Location:</strong> ${order.meeting.location}</p>
+              ${order.status !== 'Completed' ? `
+                <div class="button-group">
+                  <button class="confirm-btn complete-order" data-order-id="${order.id}">
+                    ✅ Confirm & Complete Order
+                  </button>
+                </div>
+              ` : `
+                <div class="button-group">
+                  <button class="delete-btn delete-order" data-order-id="${order.id}">
+                    🗑️ Delete Order
+                  </button>
+                </div>
+                <p style="margin-top: 10px;"><strong>✅ Order Completed</strong></p>
+              `}
+            </div>
+          `;
+        } else {
+          orderDiv.innerHTML += `
+            <p style="color:#666; font-style:italic; background:#f8f9fa; padding:12px; border-radius:6px;">
+              ⏳ Waiting for seller to set meeting details...
+            </p>
+          `;
+        }
+        
+        buyerOrdersDiv.appendChild(orderDiv);
+      });
+      
+      // Complete order button
+      document.querySelectorAll('.complete-order').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const orderId = e.target.dataset.orderId;
+          const button = e.target;
+          
+          button.disabled = true;
+          button.textContent = 'Completing...';
+          
+          try {
+            await updateDoc(doc(db, 'orders', orderId), {
+              status: "Completed",
+              completedAt: new Date()
+            });
+            
+            showNotificationPopup("Success!", "Order marked as completed! Thank you for your purchase.", "success");
+          } catch (error) {
+            console.error("Error completing order:", error);
+            showNotificationPopup("Error", "Failed to complete order. Please try again.", "warning");
+            button.disabled = false;
+            button.textContent = '✅ Confirm & Complete Order';
+          }
+        });
+      });
+      
+      // Delete order button
+      document.querySelectorAll('.delete-order').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const orderId = e.target.dataset.orderId;
+          
+          if (confirm("Are you sure you want to delete this completed order? This action cannot be undone.")) {
+            const button = e.target;
+            button.disabled = true;
+            button.textContent = 'Deleting...';
+            
+            try {
+              await deleteDoc(doc(db, 'orders', orderId));
+              showNotificationPopup("Success!", "Order deleted successfully!", "success");
+            } catch (error) {
+              console.error("Error deleting order:", error);
+              showNotificationPopup("Error", "Failed to delete order. Please try again.", "warning");
+              button.disabled = false;
+              button.textContent = '🗑️ Delete Order';
+            }
+          }
+        });
+      });
+    });
+    
+  } catch (error) {
+    console.error("Error loading buyer orders:", error);
+    buyerOrdersDiv.innerHTML = '<div class="no-orders">Error loading orders. Please refresh the page.</div>';
+  }
+}
+
+// Load Seller Orders - Only orders for products they posted
+async function loadSellerOrders(user) {
+  try {
+    const productsQuery = query(collection(db, "products"), where("sellerId", "==", user.uid));
+    const productsSnapshot = await getDocs(productsQuery);
+    
+    if (productsSnapshot.empty) {
+      sellerOrdersDiv.innerHTML = '<div class="no-orders">You haven\'t posted any products yet.</div>';
+      return;
+    }
+
+    const sellerProductIds = productsSnapshot.docs.map(doc => doc.id);
+    
+    const ordersQuery = collection(db, "orders");
+    
+    onSnapshot(ordersQuery, (snapshot) => {
+      sellerOrdersDiv.innerHTML = '';
+      let hasOrders = false;
+      let ordersArray = [];
+      
+      snapshot.docs.forEach(orderDoc => {
+        const orderData = orderDoc.data();
+        
+        const sellerItems = [];
+        let totalAmount = 0;
+        
+        if (orderData.items && Array.isArray(orderData.items)) {
+          orderData.items.forEach(item => {
+            if (sellerProductIds.includes(item.productId)) {
+              sellerItems.push(item);
+              totalAmount += (item.price || 0) * (item.quantity || 1);
+            }
+          });
+        }
+        
+        if (sellerItems.length > 0) {
+          hasOrders = true;
+          ordersArray.push({
+            id: orderDoc.id,
+            data: orderData,
+            sellerItems: sellerItems,
+            totalAmount: totalAmount
+          });
+        }
+      });
+      
+      ordersArray.sort((a, b) => new Date(b.data.createdAt) - new Date(a.data.createdAt));
+      
+      if (!hasOrders) {
+        sellerOrdersDiv.innerHTML = '<div class="no-orders">No orders for your products yet.</div>';
+        return;
+      }
+      
+      ordersArray.forEach(order => {
+        const orderDiv = document.createElement("div");
+        orderDiv.className = "order-item";
+        
+        const statusClass = getStatusClass(order.data.status);
+        
+        orderDiv.innerHTML = `
+          <h4>Order: ${order.data.orderId || order.id}</h4>
+          <p><strong>Buyer:</strong> ${order.data.buyerName || 'Customer'}</p>
+          <p>
+            <strong>Status:</strong> 
+            <span class="order-status ${statusClass}">${order.data.status || 'Pending'}</span>
+          </p>
+          <p><strong>Order Date:</strong> ${new Date(order.data.createdAt?.toDate?.() || order.data.createdAt).toLocaleString()}</p>
+          <p><strong>Total:</strong> Nu. ${order.totalAmount.toFixed(2)}</p>
+          <p><strong>Your Items in this Order:</strong></p>
+          <ul>
+            ${order.sellerItems.map(item => `
+              <li>
+                <strong>${item.name}</strong> x ${item.quantity}<br>
+                ${item.color && item.color !== 'Not specified' ? `Color: ${item.color}<br>` : ''}
+                ${item.size && item.size !== 'Not specified' ? `Size: ${item.size}<br>` : ''}
+                Price: Nu. ${(item.price * item.quantity).toFixed(2)}
+              </li>
+            `).join('')}
+          </ul>
+        `;
+        
+        if (!order.data.meeting && order.data.status !== 'Completed') {
+          orderDiv.innerHTML += `
+            <div class="meeting-inputs">
+              <p><strong>Set Meeting Details for Buyer:</strong></p>
+              <input type="datetime-local" class="meeting-datetime" required>
+              <input type="text" class="meeting-location" placeholder="Enter meeting location" required>
+              <button class="confirm-btn send-meeting" data-order-id="${order.id}">
+                📅 Send Meeting Info to Buyer
+              </button>
+            </div>
+          `;
+        } else if (order.data.meeting) {
+          orderDiv.innerHTML += `
+            <div class="meeting-info">
+              <p><strong>Meeting Scheduled:</strong></p>
+              <p><strong>Date & Time:</strong> ${new Date(order.data.meeting.datetime).toLocaleString()}</p>
+              <p><strong>Location:</strong> ${order.data.meeting.location}</p>
+              <p><strong>Status:</strong> ${order.data.status || 'Meeting Scheduled'}</p>
+              ${order.data.status === 'Completed' ? `
+                <div class="button-group">
+                  <button class="delete-btn delete-order" data-order-id="${order.id}">
+                    🗑️ Delete Order
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+        
+        sellerOrdersDiv.appendChild(orderDiv);
+      });
+      
+      // Send meeting button
+      document.querySelectorAll('.send-meeting').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const orderId = e.target.dataset.orderId;
+          const orderDiv = e.target.closest('.order-item');
+          const datetime = orderDiv.querySelector('.meeting-datetime').value;
+          const location = orderDiv.querySelector('.meeting-location').value;
+          
+          if (!datetime || !location) {
+            showNotificationPopup("Warning", "Please enter both date/time and location", "warning");
+            return;
+          }
+          
+          const button = e.target;
+          button.disabled = true;
+          button.textContent = 'Sending...';
+          
+          try {
+            await updateDoc(doc(db, 'orders', orderId), {
+              meeting: {
+                datetime: datetime,
+                location: location,
+                sentBy: currentUser.uid,
+                sentAt: new Date()
+              },
+              status: "Meeting Scheduled"
+            });
+            
+            showNotificationPopup("Success!", "Meeting info sent to buyer!", "success");
+            button.textContent = '✅ Meeting Sent';
+          } catch (error) {
+            console.error("Error sending meeting info:", error);
+            showNotificationPopup("Error", "Failed to send meeting info. Please try again.", "warning");
+            button.disabled = false;
+            button.textContent = '📅 Send Meeting Info to Buyer';
+          }
+        });
+      });
+      
+      // Delete order button for sellers
+      document.querySelectorAll('.delete-order').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const orderId = e.target.dataset.orderId;
+          
+          if (confirm("Are you sure you want to delete this order? This action cannot be undone.")) {
+            const button = e.target;
+            button.disabled = true;
+            button.textContent = 'Deleting...';
+            
+            try {
+              await deleteDoc(doc(db, 'orders', orderId));
+              showNotificationPopup("Success!", "Order deleted successfully!", "success");
+            } catch (error) {
+              console.error("Error deleting order:", error);
+              showNotificationPopup("Error", "Failed to delete order. Please try again.", "warning");
+              button.disabled = false;
+              button.textContent = '🗑️ Delete Order';
+            }
+          }
+        });
+      });
+    });
+    
+  } catch (error) {
+    console.error("Error loading seller orders:", error);
+    sellerOrdersDiv.innerHTML = '<div class="no-orders">Error loading orders. Please refresh the page.</div>';
+  }
+}
+
+function getStatusClass(status) {
+  switch(status) {
+    case 'Pending': return 'status-pending';
+    case 'Meeting Scheduled': return 'status-scheduled';
+    case 'Completed': return 'status-completed';
+    default: return 'status-pending';
+  }
+}
+
+// Logout functionality
+document.getElementById("logout-btn").addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch (error) {
+    console.error("Logout error:", error);
+    showNotificationPopup("Error", "Failed to logout. Please try again.", "warning");
+  }
+});
+
+// Role switch functionality
+roleSelect.addEventListener("change", () => {
+  if(roleSelect.value === "seller"){ 
+    sellerSection.style.display = "block"; 
+    buyerSection.style.display = "none"; 
+  } else { 
+    sellerSection.style.display = "none"; 
+    buyerSection.style.display = "block"; 
+  }
+});
+
+// Trigger initial role display
+roleSelect.dispatchEvent(new Event('change'));
+
+// Notification bell click
+notificationBell.addEventListener('click', () => {
+  if (currentUser) {
+    window.location.href = 'dashboard.html';
+  } else {
+    showNotificationPopup("Info", "Please log in to view notifications", "info");
+  }
+});
+</script>
+</body>
+</html>
