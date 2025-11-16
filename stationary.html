@@ -4,7 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ngolay | Stationary</title>
-<link rel="stylesheet" href="all_categories.css"> <!-- Product styling is now in shared CSS -->
+<link rel="stylesheet" href="all_categories.css">
+<style>
+  /* Search and dropdown styles */
+  .header-icons {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .search-container {
+    position: relative;
+  }
+  
+  #search-bar {
+    display: none;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+  }
+  
+  #search-results {
+    display: none;
+    background: white;
+    color: black;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 250px;
+    border-radius: 5px;
+    z-index: 1000;
+    padding: 5px;
+  }
+  
+  #search-results div {
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #search-results div:hover {
+    background-color: #eee;
+  }
+  
+  .account-dropdown {
+    position: relative;
+  }
+  
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    z-index: 1000;
+  }
+  
+  .dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #656283;
+  }
+  
+  .dropdown-menu a:hover {
+    background-color: #eee;
+  }
+</style>
 </head>
 <body>
 
@@ -18,8 +90,22 @@
     <a href="wishlist.html">Wishlist</a>
   </nav>
   <div class="header-icons">
-    <i class="search-icon">🔍</i>
-    <i class="account-icon">👤</i>
+    <!-- Search -->
+    <div class="search-container">
+      <i class="search-icon" id="search-toggle">🔍</i>
+      <input type="text" id="search-bar" placeholder="Search products...">
+      <div id="search-results"></div>
+    </div>
+    
+    <!-- Account Dropdown -->
+    <div class="account-dropdown">
+      <i class="account-icon" id="account-toggle">👤</i>
+      <div class="dropdown-menu" id="account-menu">
+        <a href="account.html">Account</a>
+        <a href="login.html">Log In</a>
+        <a href="logout.html">Log Out</a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -70,6 +156,7 @@ const auth = getAuth(app);
 const grid = document.getElementById("product-grid");
 
 let currentUserUid = null;
+let allProducts = [];
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -84,6 +171,9 @@ async function loadProducts() {
   const productsCol = collection(db, "products");
   const snapshot = await getDocs(productsCol);
   grid.innerHTML = '';
+
+  // Store all products for search
+  allProducts = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
 
   snapshot.forEach(docSnap => {
     const product = docSnap.data();
@@ -121,6 +211,20 @@ async function loadProducts() {
           alert('Please log in to add to cart!');
           return;
         }
+        
+        // Check if product already in cart
+        const cartQuery = query(
+          collection(db, "cart"), 
+          where("userId", "==", currentUserUid),
+          where("id", "==", docSnap.id)
+        );
+        const cartSnapshot = await getDocs(cartQuery);
+        
+        if (!cartSnapshot.empty) {
+          alert(`${product.name} is already in your cart!`);
+          return;
+        }
+        
         await addDoc(collection(db, "cart"), { 
           ...product, 
           id: docSnap.id,
@@ -138,6 +242,20 @@ async function loadProducts() {
           alert('Please log in to add to wishlist!');
           return;
         }
+        
+        // Check if product already in wishlist
+        const wishlistQuery = query(
+          collection(db, "wishlist"), 
+          where("userId", "==", currentUserUid),
+          where("id", "==", docSnap.id)
+        );
+        const wishlistSnapshot = await getDocs(wishlistQuery);
+        
+        if (!wishlistSnapshot.empty) {
+          alert(`${product.name} is already in your wishlist!`);
+          return;
+        }
+        
         await addDoc(collection(db, "wishlist"), {
           ...product,
           id: docSnap.id,
@@ -151,6 +269,53 @@ async function loadProducts() {
     }
   });
 }
+
+// Search functionality
+const searchToggle = document.getElementById('search-toggle');
+const searchBar = document.getElementById('search-bar');
+const searchResults = document.getElementById('search-results');
+
+searchToggle.addEventListener('click', () => {
+  searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
+  if(searchBar.style.display === 'block') searchBar.focus();
+});
+
+searchBar.addEventListener('input', () => {
+  const queryText = searchBar.value.trim().toLowerCase();
+  searchResults.innerHTML = '';
+  if (!queryText) { searchResults.style.display = 'none'; return; }
+
+  const matched = allProducts.filter(p => 
+    p.name.toLowerCase().includes(queryText) || 
+    (p.category && p.category.toLowerCase().includes(queryText))
+  );
+
+  if (matched.length === 0) searchResults.innerHTML = '<div>No products found.</div>';
+  else matched.forEach(p => {
+    const div = document.createElement('div');
+    div.textContent = `${p.name} (${p.category})`;
+    div.addEventListener('click', () => {
+      window.location.href = `product_detail.html?id=${p.id}`;
+    });
+    searchResults.appendChild(div);
+  });
+  searchResults.style.display = 'block';
+});
+
+// Account dropdown
+const accountToggle = document.getElementById('account-toggle');
+const accountMenu = document.getElementById('account-menu');
+
+accountToggle.addEventListener('click', e => {
+  e.stopPropagation();
+  accountMenu.style.display = accountMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+document.addEventListener('click', e => {
+  if(accountMenu.style.display === 'block' && !accountMenu.contains(e.target) && e.target !== accountToggle){
+    accountMenu.style.display = 'none';
+  }
+});
 
 loadProducts();
 </script>
