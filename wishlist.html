@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngolay | Wishlist</title>
+  <link rel="stylesheet" href="wishlist.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="cart.html">Cart</a>
+    <a href="wishlist.html" class="active">Wishlist</a>
+  </nav>
+  <div class="header-icons">
+    <div class="search-container">
+      <i class="search-icon" id="search-icon">🔍</i>
+      <input type="text" id="search-bar" placeholder="Search product...">
+    </div>
+    <div class="account-dropdown">
+      <i class="account-icon" id="account-icon">👤</i>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <a href="account.html">Account</a>
+        <a href="login.html">Log In</a>
+        <a href="logout.html">Log Out</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Wishlist Section -->
+<section class="wishlist-section">
+  <h2>Wishlist</h2>
+  <p class="item-count" id="item-count"></p>
+  <div class="wishlist-grid" id="wishlist-grid"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+  <div class="footer-links">
+    <div class="footer-section">
+      <h3>Company</h3>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-section">
+      <h3>Our Information</h3>
+      <a href="terms.html">Terms and Condition</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 Ngolay. All Rights Reserved</p></div>
+</footer>
+
+<!-- Firebase + Wishlist Logic -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, deleteDoc, addDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+  authDomain: "ngolay-project.firebaseapp.com",
+  projectId: "ngolay-project",
+  storageBucket: "ngolay-project.appspot.com",
+  messagingSenderId: "236457585222",
+  appId: "1:236457585222:web:9133bb46a97ef678d23847"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const grid = document.getElementById("wishlist-grid");
+const itemCount = document.getElementById("item-count");
+
+let currentUserUid = null;
+let allWishlistItems = [];
+
+// Check authentication state
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUserUid = user.uid;
+    console.log("✅ User authenticated:", currentUserUid);
+    loadWishlist();
+  } else {
+    grid.innerHTML = "<p>Please log in to view your wishlist.</p>";
+    itemCount.textContent = "0 Items";
+  }
+});
+
+// Load wishlist with proper error handling
+async function loadWishlist() {
+  if (!currentUserUid) return;
+  
+  try {
+    console.log("🔄 Loading wishlist for user:", currentUserUid);
+    const wishCol = collection(db, "wishlist");
+    
+    // 🔥 FIX: Add timestamp to avoid cache issues
+    const q = query(wishCol, where("userId", "==", currentUserUid));
+    const snapshot = await getDocs(q);
+
+    console.log("📥 Wishlist snapshot size:", snapshot.size);
+    
+    allWishlistItems = snapshot.docs.map(d => ({ 
+      id: d.id, 
+      ...d.data() 
+    }));
+    
+    console.log("📋 Wishlist items loaded:", allWishlistItems.map(item => ({
+      id: item.id,
+      name: item.name
+    })));
+    
+    renderWishlist(allWishlistItems);
+  } catch (error) {
+    console.error("❌ Error loading wishlist:", error);
+    grid.innerHTML = "<p>Error loading wishlist. Please try again.</p>";
+  }
+}
+
+function renderWishlist(items) {
+  grid.innerHTML = "";
+  itemCount.textContent = `${items.length} Items`;
+
+  if(items.length === 0){
+    grid.innerHTML = "<p>Your wishlist is empty.</p>";
+    return;
+  }
+
+  items.forEach((item) => {
+    const div = document.createElement("div");
+    div.className = "wishlist-item";
+    div.setAttribute('data-item-id', item.id);
+
+    // Handle image source
+    const imageSrc = item.imageBase64 
+      ? `data:image/jpeg;base64,${item.imageBase64}` 
+      : (item.images && item.images[0]) || "placeholder.jpg";
+
+    div.innerHTML = `
+      <img src="${imageSrc}" alt="${item.name}" onerror="this.src='logo.png'">
+      <h3>${item.name}</h3>
+      <p class="price">Nu. ${item.price?.toFixed(2) || '0.00'}</p>
+      <div class="wishlist-actions">
+        <button class="action-btn add-cart">🛒 Add to Cart</button>
+        <button class="action-btn remove">❌ Remove</button>
+      </div>
+    `;
+
+    // Add to Cart functionality
+    div.querySelector(".add-cart").addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (!currentUserUid) {
+        alert('Please log in to add to cart!');
+        return;
+      }
+      
+      try {
+        await addDoc(collection(db, "cart"), {
+          ...item,
+          quantity: 1,
+          userId: currentUserUid,
+          addedAt: new Date(),
+          colors: item.colors || ['Black'],
+          sizes: item.sizes || ['One Size'],
+          selectedColor: item.colors?.[0] || 'Black',
+          selectedSize: item.sizes?.[0] || 'One Size'
+        });
+        alert("✅ Added to Cart!");
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("Error adding to cart. Please try again.");
+      }
+    });
+
+    // 🔥 FIXED REMOVE FUNCTION - Optimized version
+    div.querySelector(".remove").addEventListener("click", async (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      
+      const itemId = item.id;
+      const itemName = item.name;
+      
+      console.log("🔄 Remove button clicked for:", { itemId, itemName });
+      
+      if (!confirm(`Remove "${itemName}" from wishlist?`)) {
+        return;
+      }
+      
+      try {
+        console.log("🗑️ Deleting document:", itemId);
+        
+        // 🔥 FIX 1: Remove from UI immediately for better UX
+        div.style.opacity = "0.5";
+        div.querySelector(".remove").disabled = true;
+        div.querySelector(".remove").textContent = "Removing...";
+        
+        // Delete from Firestore
+        await deleteDoc(doc(db, "wishlist", itemId));
+        console.log("✅ Successfully deleted from Firestore:", itemId);
+        
+        // 🔥 FIX 2: Remove from local array without full reload
+        allWishlistItems = allWishlistItems.filter(i => i.id !== itemId);
+        
+        // 🔥 FIX 3: Re-render without full Firestore query
+        renderWishlist(allWishlistItems);
+        
+        console.log("🔄 UI updated locally, item count:", allWishlistItems.length);
+        
+      } catch (error) {
+        console.error("❌ Error removing from wishlist:", error);
+        
+        // Reset button state on error
+        div.style.opacity = "1";
+        div.querySelector(".remove").disabled = false;
+        div.querySelector(".remove").textContent = "❌ Remove";
+        
+        alert("Error removing item. Please try again.");
+      }
+    });
+
+    // Click on item to view product details
+    div.addEventListener("click", (e) => {
+      if (!e.target.closest('.wishlist-actions')) {
+        window.location.href = `product_detail.html?id=${item.id}`;
+      }
+    });
+
+    grid.appendChild(div);
+  });
+}
+
+// Search filter
+const searchBar = document.getElementById('search-bar');
+searchBar.addEventListener('input', e => {
+  const keyword = e.target.value.toLowerCase();
+  const filtered = allWishlistItems.filter(item => 
+    item.name?.toLowerCase().includes(keyword) ||
+    (item.category && item.category.toLowerCase().includes(keyword))
+  );
+  renderWishlist(filtered);
+});
+
+// Header search toggle
+const searchIcon = document.getElementById('search-icon');
+searchIcon.addEventListener('click', () => { 
+  searchBar.style.display = searchBar.style.display === 'inline-block' ? 'none' : 'inline-block';
+  if (searchBar.style.display === 'inline-block') searchBar.focus();
+});
+
+// Account dropdown toggle
+const accountIcon = document.getElementById('account-icon');
+const dropdownMenu = document.getElementById('dropdown-menu');
+accountIcon.addEventListener('click', () => { 
+  dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  if (!accountIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+    dropdownMenu.style.display = 'none';
+  }
+});
+
+console.log("🔧 Wishlist page loaded");
+</script>
+</body>
+</html>

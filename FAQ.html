@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ | Ngolay</title>
+  <link rel="stylesheet" href="all_categories.css">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+    body { background-color: #d9d9e3; color: #333; font-size:1.05rem; }
+
+    /* FAQ Section */
+    .faq { background-color: #b8b7ca; padding:60px 80px; line-height:1.6; min-height:70vh; }
+    .faq h2 { text-align:center; font-size:2em; margin-bottom:30px; color:#333; }
+    .faq-item { margin-bottom:20px; background-color:#d9d9e3; padding:20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition:0.3s ease; cursor:pointer; overflow:hidden; }
+    .faq-item:hover { background-color:#e3e3ee; transform:translateY(-3px); }
+    .faq-item h3 { font-size:1.2em; color:#333; display:flex; justify-content:space-between; align-items:center; }
+    .faq-item h3 span { font-weight:bold; font-size:1.3em; transition:0.3s; }
+    .faq-item p { max-height:0; overflow:hidden; transition:max-height 0.5s ease; color:#444; margin-top:10px; }
+    .faq-item.active p { max-height:200px; }
+    .faq-item.active h3 span { transform:rotate(45deg); }
+
+    /* Footer */
+    .footer { background-color:#656283; color:white; padding:40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; text-align:left; }
+    .footer-logo img { width:70px; height:70px; border-radius:50%; }
+    .footer-links { flex:1; display:flex; justify-content:center; gap:60px; margin:20px 0; flex-wrap:wrap; }
+    .footer-section h3 { margin-bottom:10px; font-size:1.1em; }
+    .footer-section a { display:block; color:white; text-decoration:none; margin:5px 0; font-size:1.05em; }
+    .footer-bottom { width:100%; text-align:center; border-top:1px solid #333; margin-top:20px; padding-top:10px; color:#aaa; }
+
+    /* Responsive */
+    @media (max-width:768px) {
+      .footer-links { flex-direction:column; align-items:center; gap:20px; }
+      .faq { padding:40px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER from College Market -->
+  <header class="header">
+    <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="categories.html">Categories</a>
+      <a href="cart.html">Cart</a>
+      <a href="wishlist.html">Wishlist</a>
+    </nav>
+    <div class="header-icons">
+      <div class="search-container">
+        <i class="search-icon" id="search-toggle">🔍</i>
+        <input type="text" id="search-bar" placeholder="Search products...">
+        <div id="search-results"></div>
+      </div>
+      <div class="account-dropdown">
+        <i class="account-icon" id="account-toggle">👤</i>
+        <div class="dropdown-menu" id="account-menu">
+          <a href="account.html">Account</a>
+          <a href="login.html">Log In</a>
+          <a href="logout.html">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <h2>Frequently Asked Questions (FAQ)</h2>
+
+    <div class="faq-item">
+      <h3>1. What is Ngolay? <span>+</span></h3>
+      <p>Ngolay is a college marketplace where students can buy, sell, or exchange items and services safely.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>2. How do I buy or sell something? <span>+</span></h3>
+      <p>If you want to sell, just post your item with details (price, photos, pickup place). If you want to buy, contact the seller directly and fix a time to meet and pay.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>3. What items are not allowed? <span>+</span></h3>
+      <p>Illegal, harmful, fake, or offensive items. We may remove posts that break the rules.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>4. What if I get scammed? <span>+</span></h3>
+      <p>Ngolay is not responsible for disputes, but you can report suspicious users to us.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>5. Is my information safe? <span>+</span></h3>
+      <p>Yes, we respect your privacy. Only share personal details if you are comfortable.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>6. How do I contact Ngolay? <span>+</span></h3>
+      <p>You can reach us at <strong>Contact Page</strong> where you would be able to communicate with us.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <div class="footer-links">
+      <div class="footer-section">
+        <h3>Company</h3>
+        <a href="about.html">About Us</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Our Information</h3>
+        <a href="#">Terms</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 Ngolay. All Rights Reserved</p></div>
+  </footer>
+
+  <script type="module">
+    // FAQ accordion toggle
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      item.addEventListener('click', () => {
+        faqItems.forEach(other => {
+          if(other!==item){ other.classList.remove('active'); other.querySelector('span').textContent='+'; }
+        });
+        item.classList.toggle('active');
+        item.querySelector('span').textContent = item.classList.contains('active') ? '−' : '+';
+      });
+    });
+
+    // Header search & account dropdown
+    const searchToggle = document.getElementById('search-toggle');
+    const searchBar = document.getElementById('search-bar');
+    const searchResults = document.getElementById('search-results');
+    const accountToggle = document.getElementById('account-toggle');
+    const accountMenu = document.getElementById('account-menu');
+
+    searchToggle.addEventListener('click',()=>{ 
+      searchBar.style.display = searchBar.style.display==='block'?'none':'block';
+      if(searchBar.style.display==='block') searchBar.focus();
+    });
+    accountToggle.addEventListener('click', e=>{
+      e.stopPropagation();
+      accountMenu.style.display = accountMenu.style.display==='block'?'none':'block';
+    });
+    document.addEventListener('click', e=>{
+      if(accountMenu.style.display==='block' && !accountMenu.contains(e.target) && e.target!==accountToggle) accountMenu.style.display='none';
+    });
+
+    // First-time visitor alert
+    window.addEventListener('load', () => {
+      if(!localStorage.getItem('visited_faq')){
+        alert("Welcome to Ngolay's FAQ section!");
+        localStorage.setItem('visited_faq', true);
+      }
+    });
+  </script>
+</body>
+</html>
