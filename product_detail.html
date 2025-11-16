@@ -6,23 +6,83 @@
   <title>Ngolay | Product Detail</title>
   <link rel="stylesheet" href="product_detail.css">
   <style>
-    /* Thumbnail row for Base64 images */
-    #image-row { display:flex; gap:10px; overflow-x:auto; margin-bottom:20px; }
-    #image-row img { width:120px; height:120px; object-fit:cover; border-radius:6px; cursor:pointer; }
-    #main-image { width:100%; max-height:500px; object-fit:cover; border-radius:8px; margin-bottom:15px; }
+    /* Thumbnail row for Base64 images - Updated with larger thumbnails */
+    #image-row { 
+      display: flex; 
+      gap: 15px; 
+      overflow-x: auto; 
+      margin-bottom: 20px; 
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    #image-row img { 
+      width: 180px; 
+      height: 180px; 
+      object-fit: cover; 
+      border-radius: 6px; 
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    #image-row img:hover {
+      transform: scale(1.05);
+    }
+    /* Removed main-image styles since we're removing the big image */
 
     /* Search Results Dropdown */
-    #search-results { display: none; background: white; color: black; position: absolute; top: 35px; right: 0; max-height: 300px; overflow-y: auto; width: 250px; border-radius: 5px; z-index: 20; padding: 5px; }
-    #search-results div { padding: 5px; cursor: pointer; border-bottom: 1px solid #ddd; }
-    #search-results div:hover { background-color: #eee; }
+    #search-results { 
+      display: none; 
+      background: white; 
+      color: black; 
+      position: absolute; 
+      top: 35px; 
+      right: 0; 
+      max-height: 300px; 
+      overflow-y: auto; 
+      width: 250px; 
+      border-radius: 5px; 
+      z-index: 20; 
+      padding: 5px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    #search-results div { 
+      padding: 5px; 
+      cursor: pointer; 
+      border-bottom: 1px solid #ddd; 
+    }
+    #search-results div:hover { 
+      background-color: #eee; 
+    }
 
     /* Account Dropdown */
-    .dropdown-menu { display: none; position: absolute; top: 35px; right: 0; background: white; border: 1px solid #ddd; border-radius: 5px; z-index: 20; }
-    .dropdown-menu a { display: block; padding: 10px; text-decoration: none; color: #656283; }
-    .dropdown-menu a:hover { background-color: #eee; }
+    .dropdown-menu { 
+      display: none; 
+      position: absolute; 
+      top: 35px; 
+      right: 0; 
+      background: white; 
+      border: 1px solid #ddd; 
+      border-radius: 5px; 
+      z-index: 20; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .dropdown-menu a { 
+      display: block; 
+      padding: 10px; 
+      text-decoration: none; 
+      color: #656283; 
+    }
+    .dropdown-menu a:hover { 
+      background-color: #eee; 
+    }
 
     /* Search input */
-    #search-bar { display: none; padding: 5px; border-radius: 5px; border: 1px solid #ccc; margin-left: 5px; }
+    #search-bar { 
+      display: none; 
+      padding: 5px; 
+      border-radius: 5px; 
+      border: 1px solid #ccc; 
+      margin-left: 5px; 
+    }
   </style>
 </head>
 <body>
@@ -56,7 +116,7 @@
   <!-- Product Detail Section -->
   <section class="product_detail">
     <h2>PRODUCT DETAIL</h2>
-    <img id="main-image" src="" alt="Product Image">
+    <!-- Removed the main-image element -->
     <div class="image-row" id="image-row"></div>
     <div class="product-info" id="product-info"></div>
   </section>
@@ -146,18 +206,16 @@
       }
 
       const product = productSnap.data();
-      const mainImage = document.getElementById("main-image");
       const imageRow = document.getElementById("image-row");
       imageRow.innerHTML = "";
 
+      // Load all product images as larger thumbnails
       if(product.images?.length > 0){
         const compressedImages = await Promise.all(product.images.map(img => compressBase64(img)));
-        mainImage.src = compressedImages[0];
         compressedImages.forEach((img, idx) => {
           const thumb = document.createElement("img");
           thumb.src = img;
           thumb.alt = product.name + " " + (idx+1);
-          thumb.addEventListener("click", () => { mainImage.src = img; });
           imageRow.appendChild(thumb);
         });
       }
