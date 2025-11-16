@@ -28,7 +28,7 @@ body {
 }
 
 .logo img {
-  width: 70px;
+  width: 80px;
   height: 70px;
   border-radius: 50%;
 }
@@ -245,4 +245,5 @@ body {
   .product-grid {
     grid-template-columns: 1fr;
   }
+
 }
