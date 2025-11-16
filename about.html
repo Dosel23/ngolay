@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Ngolay</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+    body { background-color:#d9d9e3; color:#333; font-size:1.05rem; }
+
+    /* Header */
+    .header { display:flex; justify-content:space-between; align-items:center; background-color:#656283; padding:10px 40px; color:white; flex-wrap:wrap; }
+    .logo img { width:80px; height:80px; border-radius:50%; }
+    .nav a { color:white; text-decoration:none; margin:0 15px; font-weight:bold; transition:0.3s; font-size:1.05em; }
+    .nav a:hover { color:#ddd; }
+    .header-icons { display:flex; align-items:center; gap:15px; }
+    .search-container { position:relative; }
+    #search-bar { display:none; position:absolute; top:-5px; right:30px; padding:5px; border-radius:5px; border:none; }
+    #search-results { display:none; background:white; color:black; position:absolute; top:35px; right:0; max-height:300px; overflow-y:auto; width:250px; border-radius:5px; z-index:20; padding:5px; }
+    #search-results div { padding:5px; cursor:pointer; border-bottom:1px solid #ddd; }
+    #search-results div:hover { background-color:#eee; }
+    .account-dropdown { position:relative; cursor:pointer; }
+    .dropdown-menu { display:none; position:absolute; right:0; top:35px; background-color:#222; border-radius:5px; overflow:hidden; z-index:10; }
+    .dropdown-menu a { display:block; color:white; padding:10px 20px; text-decoration:none; }
+    .dropdown-menu a:hover { background-color:#333; }
+
+    /* About Us Section */
+    .about-us { background-color:#b8b7ca; padding:60px 80px; text-align:center; }
+    .about-content { display:flex; justify-content:center; align-items:flex-start; gap:40px; flex-wrap:wrap; margin-top:20px; }
+    .about-image img { width:260px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+    .story { max-width:500px; text-align:left; }
+    .story h3 { font-size:1.8em; margin-bottom:15px; color:#333; }
+    .story p { line-height:1.5; margin-bottom:10px; }
+
+    /* Principles Section */
+    .principles { background-color:#656283; color:white; text-align:center; padding:40px 20px; }
+    .principles h3 { font-size:1.6em; margin-bottom:15px; }
+    .principles-list { display:flex; justify-content:center; gap:40px; flex-wrap:wrap; }
+    .principles-list div { font-weight:bold; font-size:1.1em; }
+
+    /* Team Section */
+    .team { background-color:#d9d9e3; text-align:center; padding:50px 20px; }
+    .team h3 { font-size:1.8em; margin-bottom:30px; color:#333; }
+    .team-members { display:flex; justify-content:center; gap:30px; flex-wrap:wrap; }
+    .member { display:flex; flex-direction:column; align-items:center; }
+    .member img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
+    .member-info { margin-top:8px; text-align:center; font-weight:bold; color:#656283; }
+
+    /* Footer */
+    .footer { background-color:#656283; color:white; padding:40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; text-align:left; }
+    .footer-logo img { width:70px; height:70px; border-radius:50%; }
+    .footer-links { flex:1; display:flex; justify-content:center; gap:60px; margin:20px 0; flex-wrap:wrap; }
+    .footer-section h3 { margin-bottom:10px; font-size:1.1em; }
+    .footer-section a { display:block; color:white; text-decoration:none; margin:5px 0; font-size:1.05em; }
+    .footer-bottom { width:100%; text-align:center; border-top:1px solid #333; margin-top:20px; padding-top:10px; color:#aaa; }
+
+    /* Responsive */
+    @media (max-width:768px) {
+      .about-content { flex-direction:column; text-align:center; }
+      .story { text-align:center; }
+      .principles-list { gap:20px; }
+      .footer-links { flex-direction:column; align-items:center; gap:20px; }
+      .member img { width:80px; height:80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="listing.html">Categories</a>
+      <a href="cart.html">Cart</a>
+      <a href="wishlist.html">Wishlist</a>
+    </nav>
+    <div class="header-icons">
+      <div class="search-container">
+        <i class="search-icon" id="search-toggle">🔍</i>
+        <input type="text" id="search-bar" placeholder="Search products...">
+        <div id="search-results"></div>
+      </div>
+      <div class="account-dropdown">
+        <i class="account-icon" id="account-toggle">👤</i>
+        <div class="dropdown-menu" id="account-menu">
+          <a href="account.html">Account</a>
+          <a href="login.html">Log In</a>
+          <a href="logout.html">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- About Us Section -->
+  <section class="about-us">
+    <h2>About Us</h2>
+    <div class="about-content">
+      <div class="about-image">
+        <img id="about-image" src="basket.jpg" alt="Ngolay Market">
+      </div>
+      <div class="story">
+        <h3>Our Story</h3>
+        <p><strong>Welcome to Ngolay, your very own college marketplace!</strong></p>
+        <p>We created this platform as part of our college project, but our vision goes beyond just an assignment.</p>
+        <p>Ngolay is designed to serve students, making buying and selling within our campus easier, faster, and more reliable.</p>
+        <p>Our team of five dedicated members worked together to bring this idea to life, combining creativity, technology, and the needs of college life.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles Section -->
+  <section class="principles">
+    <h3>Our Principles:</h3>
+    <div class="principles-list">
+      <div>Simplicity</div>
+      <div>Safety</div>
+      <div>Transparency</div>
+      <div>Community Focus</div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team">
+    <h3>Our Team</h3>
+    <div class="team-members">
+      <div class="member">
+        <img src="ugyen.jpg" alt="Ugyen Tenzin">
+        <div class="member-info"><strong>Ugyen Tenzin</strong></div>
+      </div>
+      <div class="member">
+        <img src="kezang.jpg" alt="Kezang Tshomo">
+        <div class="member-info"><strong>Kezang Tshomo</strong></div>
+      </div>
+      <div class="member">
+        <img src="dorji.jpg" alt="Dorji Seldon">
+        <div class="member-info"><strong>Dorji Seldon</strong></div>
+      </div>
+      <div class="member">
+        <img src="dhan.jpg" alt="Dhan Maya Gurung">
+        <div class="member-info"><strong>Dhan Maya Gurung</strong></div>
+      </div>
+      <div class="member">
+        <img src="dawa.jpg" alt="Dawa Zam">
+        <div class="member-info"><strong>Dawa Zam</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo"><img src="logo.png" alt="Ngolay Logo"></div>
+    <div class="footer-links">
+      <div class="footer-section">
+        <h3>Company</h3>
+        <a href="#">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Our Information</h3>
+        <a href="terms.html">Terms & Conditions</a>
+        <a href="FAQ.html">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 Ngolay. All Rights Reserved</p></div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJfAyK_wma5RaTv6DODRgCDExnFuLXK00",
+      authDomain: "ngolay-project.firebaseapp.com",
+      projectId: "ngolay-project",
+      storageBucket: "ngolay-project.appspot.com",
+      messagingSenderId: "236457585222",
+      appId: "1:236457585222:web:9133bb46a97ef678d23847",
+      measurementId: "G-34BC1Z5PPM"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchToggle = document.getElementById('search-toggle');
+      const searchBar = document.getElementById('search-bar');
+      const searchResults = document.getElementById('search-results');
+      searchToggle.addEventListener('click', () => {
+        searchBar.style.display = searchBar.style.display==='block'?'none':'block';
+        if(searchBar.style.display==='block') searchBar.focus();
+      });
+
+      const accountToggle = document.getElementById('account-toggle');
+      const accountMenu = document.getElementById('account-menu');
+      accountToggle.addEventListener('click', e=>{
+        e.stopPropagation();
+        accountMenu.style.display = accountMenu.style.display==='block'?'none':'block';
+      });
+      document.addEventListener('click', e=>{
+        if(accountMenu.style.display==='block' && !accountMenu.contains(e.target) && e.target!==accountToggle){
+          accountMenu.style.display='none';
+        }
+      });
+
+      searchBar.addEventListener('input', async () => {
+        const query = searchBar.value.trim().toLowerCase();
+        searchResults.innerHTML = '';
+        if(!query){ searchResults.style.display='none'; return; }
+        const snapshot = await getDocs(collection(db,"products"));
+        const matched = snapshot.docs.map(d=>({id:d.id,...d.data()}))
+          .filter(p=>p.name.toLowerCase().includes(query));
+        if(matched.length===0) searchResults.innerHTML='<div>No products found.</div>';
+        else matched.forEach(p=>{
+          const div=document.createElement('div');
+          div.textContent = `${p.name} (${p.category})`;
+          div.addEventListener('click', ()=>{ window.location.href=`product_detail.html?id=${p.id}`; });
+          searchResults.appendChild(div);
+        });
+        searchResults.style.display='block';
+      });
+
+      async function loadAboutImage() {
+        const snapshot = await getDocs(collection(db,"about"));
+        snapshot.docs.forEach(doc=>{
+          const data = doc.data();
+          if(data.image && data.image.startsWith('data:image')) {
+            document.getElementById('about-image').src = data.image;
+          }
+        });
+      }
+      loadAboutImage();
+
+      const sections=document.querySelectorAll('section');
+      window.addEventListener('scroll', ()=>{
+        sections.forEach(section=>{
+          const rect = section.getBoundingClientRect();
+          if(rect.top < window.innerHeight-100){
+            section.style.opacity=1;
+            section.style.transform='translateY(0)';
+            section.style.transition='all 0.8s ease-out';
+          } else {
+            section.style.opacity=0;
+            section.style.transform='translateY(50px)';
+          }
+        });
+      });
+
+      const teamMembers=document.querySelectorAll('.member');
+      teamMembers.forEach(member=>{
+        member.addEventListener('mouseenter', ()=>{ member.style.transform='scale(1.05)'; });
+        member.addEventListener('mouseleave', ()=>{ member.style.transform='scale(1)'; });
+      });
+
+      const footerYear = document.querySelector('.footer-bottom p');
+      footerYear.textContent = `© ${new Date().getFullYear()} Ngolay. All Rights Reserved`;
+
+      window.addEventListener('load', async () => {
+        try {
+          const visitorsCol = collection(db, "visitors");
+          const snapshot = await getDocs(visitorsCol);
+          if(snapshot.empty){
+            alert("Welcome to Ngolay! Explore our campus marketplace.");
+            await addDoc(visitorsCol, {
+              firstVisit: new Date().toISOString(),
+              message: "First-time visitor to About page"
+            });
+          }
+        } catch (error) {
+          console.error("Error checking Firestore visitor status:", error);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
