@@ -20,7 +20,7 @@ body { background:#f8f9fa; color:#656283; }
     gap: 15px;
 }
 .logo { 
-    margin-right: auto; /* This pushes everything else to the right */
+    margin-right: auto;
 }
 .logo img{ width:80px; height:80px; border-radius:50%; }
 .nav { 
@@ -28,7 +28,7 @@ body { background:#f8f9fa; color:#656283; }
     gap: 15px;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 0 auto; /* Center the nav */
+    margin: 0 auto;
 }
 .nav a{ color:white; text-decoration:none; font-weight:bold; padding: 5px 10px; border-radius: 5px; transition: 0.3s; }
 .nav a:hover{ background: rgba(255,255,255,0.2); }
@@ -38,10 +38,9 @@ body { background:#f8f9fa; color:#656283; }
     gap:15px; 
     flex-wrap: wrap;
     justify-content: center;
-    margin-left: auto; /* This pushes icons to the right */
+    margin-left: auto;
 }
 
-/* Rest of your CSS remains exactly the same */
 .dashboard-container{ 
     padding:40px 20px; 
     display:flex; 
@@ -904,19 +903,33 @@ async function loadBuyerOrders(user) {
   }
 }
 
-// Load Seller Orders - Only orders for products they posted
+// Load Seller Orders - COMPLETELY FIXED VERSION
 async function loadSellerOrders(user) {
   try {
+    console.log("🔄 Loading seller orders for user:", user.uid);
+    
+    // First get all products by this seller
     const productsQuery = query(collection(db, "products"), where("sellerId", "==", user.uid));
     const productsSnapshot = await getDocs(productsQuery);
+    
+    console.log("📦 Seller products found:", productsSnapshot.docs.length);
     
     if (productsSnapshot.empty) {
       sellerOrdersDiv.innerHTML = '<div class="no-orders">You haven\'t posted any products yet.</div>';
       return;
     }
 
+    // Get the product IDs and create a map for quick lookup
     const sellerProductIds = productsSnapshot.docs.map(doc => doc.id);
+    const productMap = {};
+    productsSnapshot.docs.forEach(doc => {
+      productMap[doc.id] = doc.data();
+    });
     
+    console.log("🔑 Seller product IDs:", sellerProductIds);
+    console.log("🗺️ Product map:", productMap);
+    
+    // Get ALL orders from the database
     const ordersQuery = collection(db, "orders");
     
     onSnapshot(ordersQuery, (snapshot) => {
@@ -924,67 +937,152 @@ async function loadSellerOrders(user) {
       let hasOrders = false;
       let ordersArray = [];
       
+      console.log("📋 Total orders in database:", snapshot.docs.length);
+      
       snapshot.docs.forEach(orderDoc => {
         const orderData = orderDoc.data();
+        console.log("🔍 Checking order:", orderDoc.id, orderData);
         
-        const sellerItems = [];
+        let sellerItems = [];
         let totalAmount = 0;
+        let foundSellerProduct = false;
         
+        // METHOD 1: Check if order has sellerId field matching current user
+        if (orderData.sellerId === user.uid) {
+          console.log("✅ Found order with matching sellerId");
+          foundSellerProduct = true;
+        }
+        
+        // METHOD 2: Check items array for seller's products
         if (orderData.items && Array.isArray(orderData.items)) {
-          orderData.items.forEach(item => {
-            if (sellerProductIds.includes(item.productId)) {
-              sellerItems.push(item);
-              totalAmount += (item.price || 0) * (item.quantity || 1);
+          sellerItems = orderData.items.filter(item => {
+            const isSellerProduct = sellerProductIds.includes(item.productId);
+            if (isSellerProduct) {
+              console.log("✅ Found seller product in items:", item.productId, item.name);
+              foundSellerProduct = true;
             }
+            return isSellerProduct;
           });
         }
         
-        if (sellerItems.length > 0) {
+        // METHOD 3: Check for single product orders (legacy format)
+        if (!orderData.items && orderData.productId && sellerProductIds.includes(orderData.productId)) {
+          console.log("✅ Found legacy seller order with productId:", orderData.productId);
+          foundSellerProduct = true;
+          sellerItems = [{
+            name: orderData.productName || 'Product',
+            quantity: orderData.quantity || 1,
+            price: orderData.price || 0,
+            color: orderData.color || 'Not specified',
+            size: orderData.size || 'Not specified',
+            productId: orderData.productId
+          }];
+        }
+        
+        if (foundSellerProduct) {
           hasOrders = true;
+          
+          // Calculate total for seller's items only
+          if (sellerItems.length > 0) {
+            totalAmount = sellerItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+          } else {
+            // If no specific items but sellerId matches, show the whole order
+            if (orderData.items && Array.isArray(orderData.items)) {
+              totalAmount = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            } else {
+              totalAmount = (orderData.price || 0) * (orderData.quantity || 1);
+            }
+          }
+          
           ordersArray.push({
             id: orderDoc.id,
             data: orderData,
             sellerItems: sellerItems,
-            totalAmount: totalAmount
+            totalAmount: totalAmount,
+            isDirectSellerOrder: orderData.sellerId === user.uid
           });
+          
+          console.log("🎯 Added seller order to display:", orderDoc.id);
         }
       });
       
+      console.log("📊 Total seller orders found:", ordersArray.length);
+      
+      // Sort orders by date (newest first)
       ordersArray.sort((a, b) => new Date(b.data.createdAt) - new Date(a.data.createdAt));
       
       if (!hasOrders) {
-        sellerOrdersDiv.innerHTML = '<div class="no-orders">No orders for your products yet.</div>';
+        sellerOrdersDiv.innerHTML = `
+          <div class="no-orders">
+            <p>No orders for your products yet.</p>
+            <p style="margin-top: 10px; font-size: 14px; color: #666;">
+              Debug Info:<br>
+              - Your products: ${sellerProductIds.length}<br>
+              - Total orders in system: ${snapshot.docs.length}<br>
+              - Your user ID: ${user.uid}
+            </p>
+            <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #656283; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              Refresh Page
+            </button>
+          </div>
+        `;
         return;
       }
       
+      // Display each order
       ordersArray.forEach(order => {
         const orderDiv = document.createElement("div");
         orderDiv.className = "order-item";
         
         const statusClass = getStatusClass(order.data.status);
         
+        let itemsHtml = '';
+        
+        if (order.sellerItems.length > 0) {
+          itemsHtml = order.sellerItems.map(item => `
+            <li>
+              <strong>${item.name}</strong> x ${item.quantity}<br>
+              ${item.color && item.color !== 'Not specified' ? `Color: ${item.color}<br>` : ''}
+              ${item.size && item.size !== 'Not specified' ? `Size: ${item.size}<br>` : ''}
+              Price: Nu. ${(item.price * item.quantity).toFixed(2)}
+            </li>
+          `).join('');
+        } else if (order.data.items && Array.isArray(order.data.items)) {
+          // Show all items if this is a direct seller order
+          itemsHtml = order.data.items.map(item => `
+            <li>
+              <strong>${item.name}</strong> x ${item.quantity}<br>
+              ${item.color && item.color !== 'Not specified' ? `Color: ${item.color}<br>` : ''}
+              ${item.size && item.size !== 'Not specified' ? `Size: ${item.size}<br>` : ''}
+              Price: Nu. ${(item.price * item.quantity).toFixed(2)}
+            </li>
+          `).join('');
+        } else {
+          // Legacy single product order
+          itemsHtml = `
+            <li>
+              <strong>${order.data.productName || 'Product'}</strong> x ${order.data.quantity || 1}<br>
+              ${order.data.color && order.data.color !== 'Not specified' ? `Color: ${order.data.color}<br>` : ''}
+              ${order.data.size && order.data.size !== 'Not specified' ? `Size: ${order.data.size}<br>` : ''}
+              Price: Nu. ${((order.data.price || 0) * (order.data.quantity || 1)).toFixed(2)}
+            </li>
+          `;
+        }
+        
         orderDiv.innerHTML = `
           <h4>Order: ${order.data.orderId || order.id}</h4>
-          <p><strong>Buyer:</strong> ${order.data.buyerName || 'Customer'}</p>
+          <p><strong>Buyer:</strong> ${order.data.buyerName || order.data.userName || 'Customer'}</p>
           <p>
             <strong>Status:</strong> 
             <span class="order-status ${statusClass}">${order.data.status || 'Pending'}</span>
           </p>
           <p><strong>Order Date:</strong> ${new Date(order.data.createdAt?.toDate?.() || order.data.createdAt).toLocaleString()}</p>
-          <p><strong>Total:</strong> Nu. ${order.totalAmount.toFixed(2)}</p>
-          <p><strong>Your Items in this Order:</strong></p>
-          <ul>
-            ${order.sellerItems.map(item => `
-              <li>
-                <strong>${item.name}</strong> x ${item.quantity}<br>
-                ${item.color && item.color !== 'Not specified' ? `Color: ${item.color}<br>` : ''}
-                ${item.size && item.size !== 'Not specified' ? `Size: ${item.size}<br>` : ''}
-                Price: Nu. ${(item.price * item.quantity).toFixed(2)}
-              </li>
-            `).join('')}
-          </ul>
+          <p><strong>Total: Nu. ${order.totalAmount.toFixed(2)}</strong></p>
+          <p><strong>Items:</strong></p>
+          <ul>${itemsHtml}</ul>
         `;
         
+        // Show meeting inputs if no meeting is set and order is not completed
         if (!order.data.meeting && order.data.status !== 'Completed') {
           orderDiv.innerHTML += `
             <div class="meeting-inputs">
@@ -1017,7 +1115,7 @@ async function loadSellerOrders(user) {
         sellerOrdersDiv.appendChild(orderDiv);
       });
       
-      // Send meeting button
+      // Add event listeners for send meeting buttons
       document.querySelectorAll('.send-meeting').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const orderId = e.target.dataset.orderId;
@@ -1081,8 +1179,16 @@ async function loadSellerOrders(user) {
     });
     
   } catch (error) {
-    console.error("Error loading seller orders:", error);
-    sellerOrdersDiv.innerHTML = '<div class="no-orders">Error loading orders. Please refresh the page.</div>';
+    console.error("❌ Error loading seller orders:", error);
+    sellerOrdersDiv.innerHTML = `
+      <div class="no-orders">
+        <p>Error loading orders. Please refresh the page.</p>
+        <p style="margin-top: 10px; font-size: 14px; color: #666;">Error: ${error.message}</p>
+        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #656283; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Refresh Page
+        </button>
+      </div>
+    `;
   }
 }
 
